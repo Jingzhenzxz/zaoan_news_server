@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper">
+
+    <resultMap id="NewsResultMap" type="News">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="preview_image" property="previewImage" />
+        <result column="pubDate" property="pubDate" />
+        <result column="link" property="link" />
+        <result column="author" property="author" />
+        <result column="media_id" property="media.id" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <select id="getAllNews" resultMap="NewsResultMap">
+        SELECT * FROM news
+    </select>
+
+    <select id="getNewsByMediaNameAndNewsTitle" resultMap="NewsResultMap">
+        SELECT n.* FROM news n
+        INNER JOIN media m ON n.media_id = m.id
+        WHERE m.name = #{mediaName} AND n.title = #{newsTitle}
+    </select>
+
+</mapper>

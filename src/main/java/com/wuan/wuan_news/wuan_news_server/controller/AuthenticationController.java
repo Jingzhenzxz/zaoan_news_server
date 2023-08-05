@@ -6,7 +6,6 @@ import com.wuan.wuan_news.wuan_news_server.dto.RegisterRequest;
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.PasswordException;
 import com.wuan.wuan_news.wuan_news_server.exception.UserException;
-import com.wuan.wuan_news.wuan_news_server.model.User;
 import com.wuan.wuan_news.wuan_news_server.service.AuthenticationService;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;

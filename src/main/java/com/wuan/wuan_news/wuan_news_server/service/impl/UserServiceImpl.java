@@ -5,6 +5,7 @@ import com.wuan.wuan_news.wuan_news_server.exception.UserException;
 import com.wuan.wuan_news.wuan_news_server.mapper.UserMapper;
 import com.wuan.wuan_news.wuan_news_server.model.User;
 import com.wuan.wuan_news.wuan_news_server.service.UserService;
+import com.wuan.wuan_news.wuan_news_server.util.UserUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +22,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final UserUtil userUtil;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, UserUtil userUtil) {
         this.userMapper = userMapper;
+        this.userUtil = userUtil;
     }
 
     @Override
@@ -42,33 +45,6 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserException("没有找到该 Email 对应的用户");
         }
-        return convertUserModelToUserDTO(user);
-    }
-
-    private UserDTO convertUserModelToUserDTO(User user) {
-        // Convert the User object to UserDto object
-        if (user == null) {
-            return null;
-        }
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-
-        return userDTO;
-    }
-
-    private User convertUserDTOToUserModel(UserDTO userDTO) {
-        // Convert the UserDto object to User object
-        if (userDTO == null) {
-            return null;
-        }
-
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-
-        return user;
+        return userUtil.convertUserModelToUserDTO(user);
     }
 }

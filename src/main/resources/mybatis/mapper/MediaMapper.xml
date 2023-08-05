@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper">
 
-    <resultMap id="MediaResultMap" type="MediaDTO">
+    <resultMap id="MediaResultMap" type="com.wuan.wuan_news.wuan_news_server.model.Media">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="rss_link" property="rssLink" />
@@ -10,7 +10,7 @@
         <result column="updated_at" property="updatedAt" />
     </resultMap>
 
-    <insert id="insert" parameterType="MediaDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.dto.MediaDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO media (name, rss_link)
         VALUES (#{name}, #{rssLink})
     </insert>
@@ -19,4 +19,7 @@
         SELECT * FROM media WHERE name = #{name}
     </select>
 
+    <select id="getAllMedias" resultMap="MediaResultMap">
+        SELECT * FROM media
+    </select>
 </mapper>

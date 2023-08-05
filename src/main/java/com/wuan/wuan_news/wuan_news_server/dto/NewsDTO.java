@@ -1,4 +1,4 @@
-package com.wuan.wuan_news.wuan_news_server.model;
+package com.wuan.wuan_news.wuan_news_server.dto;
 
 import java.time.LocalDateTime;
 
@@ -6,38 +6,17 @@ import java.time.LocalDateTime;
  * Created with IntelliJ IDEA.
  *
  * @author Jingzhen
- * @date 2023/07/30/ 14:01
+ * @date 2023/08/05/ 11:17
  * @description
  */
-
-public class News {
-    private Long id;
-
+public class NewsDTO {
     private String title;
-
     private String description;
-
     private String previewImage;
-
     private LocalDateTime pubDate;
-
     private String link;
-
     private String author;
-
     private Long mediaId;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -93,21 +72,5 @@ public class News {
 
     public void setMediaId(Long mediaId) {
         this.mediaId = mediaId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

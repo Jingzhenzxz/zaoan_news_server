@@ -4,7 +4,6 @@ import com.wuan.wuan_news.wuan_news_server.exception.NewsException;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

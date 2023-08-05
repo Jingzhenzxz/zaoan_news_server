@@ -1,5 +1,6 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
+import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,4 +18,8 @@ public interface NewsMapper {
     List<News> getAllNews();
 
     News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
+
+    News insert(NewsDTO newsDTO);
+
+    News update(NewsDTO newsDTO);
 }

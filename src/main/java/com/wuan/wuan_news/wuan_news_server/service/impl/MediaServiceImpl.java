@@ -3,7 +3,10 @@ package com.wuan.wuan_news.wuan_news_server.service.impl;
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.MediaException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
+import com.wuan.wuan_news.wuan_news_server.model.Media;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
+import com.wuan.wuan_news.wuan_news_server.util.MediaUtil;
+import com.wuan.wuan_news.wuan_news_server.util.RssUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +20,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class MediaServiceImpl implements MediaService {
     private final MediaMapper mediaMapper;
-
+    private final RssUtil rssUtil;
+    private final MediaUtil mediaUtil;
     @Autowired
-    public MediaServiceImpl(MediaMapper mediaMapper) {
+    public MediaServiceImpl(MediaMapper mediaMapper, RssUtil rssUtil, MediaUtil mediaUtil) {
         this.mediaMapper = mediaMapper;
+        this.rssUtil = rssUtil;
+        this.mediaUtil = mediaUtil;
     }
 
     @Override
     public MediaDTO createMedia(MediaDTO mediaDTO) {
+        if (!rssUtil.isValidRssUrl(mediaDTO.getRssLink())) {
+            throw new MediaException("RSS 链接的格式有误");
+        }
+
         Integer result = mediaMapper.insert(mediaDTO);
         if (result == 0) {
             throw new MediaException("创建媒体失败");
         } else {
-            return mediaMapper.findByName(mediaDTO.getName());
+            return mediaUtil.convertMediaModelToMediaDTO(mediaMapper.findByName(mediaDTO.getName()));
         }
     }
 }

@@ -17,7 +17,7 @@ public class MediaDTO {
     @NotEmpty(message = "媒体名称不能为空")
     private String name;
 
-    @NotEmpty(message = "RSS地址不能为空")
+    @NotEmpty(message = "RSS 地址不能为空")
     private String rssLink;
 
     private LocalDateTime createdAt;

@@ -1,16 +1,14 @@
 package com.wuan.wuan_news.wuan_news_server.controller;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
+import com.wuan.wuan_news.wuan_news_server.dto.MediaRequestDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.MediaResponseDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -34,12 +32,22 @@ public class MediaController {
     }
 
     @PostMapping
-    public ResponseEntity<MediaResponseDTO> createMedia(@Valid @RequestBody MediaDTO mediaDTO, Principal principal) {
+    public ResponseEntity<MediaResponseDTO> createMedia(@Valid @RequestBody MediaRequestDTO mediaRequestDTO, Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        MediaDTO newMediaDTO  = mediaService.createMedia(mediaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("添加媒体成功", newMediaDTO));
+        MediaDTO createdMediaDTO  = mediaService.createMedia(mediaRequestDTO.getName(), mediaRequestDTO.getRssLink());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("添加媒体成功", createdMediaDTO));
+    }
+
+    @DeleteMapping("/{mediaName}")
+    public ResponseEntity<MediaResponseDTO> deleteMedia(@PathVariable String mediaName, Principal principal) {
+        if (principal == null) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+
+        MediaDTO deletedMediaDTO  = mediaService.deleteMediaByMediaName(mediaName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("删除媒体成功", deletedMediaDTO));
     }
 }

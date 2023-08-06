@@ -11,6 +11,10 @@ spring:
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
+  # 下面的配置是给 Springfox 用的，Springfox 使用的路径匹配是基于 AntPathMatcher 的，而 Spring Boot 2.6.X 使用的是 PathPatternMatcher。
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 mybatis:
   type-aliases-package: com.wuan.wuan_news.wuan_news_server.model

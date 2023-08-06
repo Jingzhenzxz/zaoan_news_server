@@ -19,7 +19,7 @@ public class NewsDTO {
     private LocalDateTime pubDate;
     private String link;
     private String author;
-    private Long mediaId;
+    private String mediaName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

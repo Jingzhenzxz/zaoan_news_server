@@ -57,4 +57,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-    }}
+    }
+
+    @ExceptionHandler(MediaNameAlreadyExists.class)
+    public ResponseEntity<String> handleMediaNameAlreadyExists(MediaNameAlreadyExists ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NewsCreationException.class)
+    public ResponseEntity<String> handleNewsCreationException(NewsCreationException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+}

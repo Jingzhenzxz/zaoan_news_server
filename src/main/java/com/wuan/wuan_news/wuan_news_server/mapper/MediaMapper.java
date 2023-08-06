@@ -19,4 +19,6 @@ public interface MediaMapper {
 
     Media findByName(String name);
     List<Media> getAllMedias();
+
+    int deleteByName(String name);
 }

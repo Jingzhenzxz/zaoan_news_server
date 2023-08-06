@@ -27,7 +27,7 @@ public class NewsUtil {
         newsDTO.setLink(news.getLink());
         newsDTO.setPreviewImage(news.getPreviewImage());
         newsDTO.setPubDate(news.getPubDate());
-        newsDTO.setMediaId(news.getMediaId());
+        newsDTO.setMediaName(news.getMediaName());
         newsDTO.setCreatedAt(news.getCreatedAt());
         newsDTO.setUpdatedAt(news.getUpdatedAt());
 
@@ -44,7 +44,7 @@ public class NewsUtil {
         news.setAuthor(newsDTO.getAuthor());
         news.setDescription(newsDTO.getDescription());
         news.setLink(newsDTO.getLink());
-        news.setMediaId(newsDTO.getMediaId());
+        news.setMediaName(newsDTO.getMediaName());
         news.setPreviewImage(newsDTO.getPreviewImage());
         news.setTitle(newsDTO.getTitle());
         news.setPubDate(newsDTO.getPubDate());

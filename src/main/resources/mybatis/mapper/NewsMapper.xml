@@ -7,10 +7,10 @@
         <result column="title" property="title" />
         <result column="description" property="description" />
         <result column="preview_image" property="previewImage" />
-        <result column="pubDate" property="pubDate" />
+        <result column="pub_date" property="pubDate" />
         <result column="link" property="link" />
         <result column="author" property="author" />
-        <result column="media_id" property="media.id" />
+        <result column="media_name" property="mediaName" />
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
     </resultMap>
@@ -22,13 +22,13 @@
     <select id="getNewsByMediaNameAndNewsTitle" resultMap="NewsResultMap">
         SELECT n.* FROM news n
         INNER JOIN media m
-        ON n.media_id = m.id
+        ON n.media_name = m.name
         WHERE m.name = #{mediaName} AND n.title = #{newsTitle}
     </select>
 
     <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.model.News" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `news` (`title`, `description`, `preview_image`, `pubDate`, `link`, `author`, `media_id`)
-        VALUES (#{title}, #{description}, #{previewImage}, #{pubDate}, #{link}, #{author}, #{mediaId})
+        INSERT INTO `news` (`title`, `description`, `preview_image`, `pub_date`, `link`, `author`, `media_name`)
+        VALUES (#{title}, #{description}, #{previewImage}, #{pubDate}, #{link}, #{author}, #{mediaName})
     </insert>
 
     <insert id="insertSelective" parameterType="com.wuan.wuan_news.wuan_news_server.model.News" useGeneratedKeys="true" keyProperty="id">
@@ -37,10 +37,10 @@
             <if test="title != null">`title`,</if>
             <if test="description != null">`description`,</if>
             <if test="previewImage != null">`preview_image`,</if>
-            <if test="pubDate != null">`pubDate`,</if>
+            <if test="pubDate != null">`pub_date`,</if>
             <if test="link != null">`link`,</if>
             <if test="author != null">`author`,</if>
-            <if test="mediaId != null">`media_id`,</if>
+            <if test="mediaName != null">`media_name`,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="title != null">#{title},</if>
@@ -49,7 +49,7 @@
             <if test="pubDate != null">#{pubDate},</if>
             <if test="link != null">#{link},</if>
             <if test="author != null">#{author},</if>
-            <if test="mediaId != null">#{mediaId},</if>
+            <if test="mediaName != null">#{mediaName},</if>
         </trim>
     </insert>
 
@@ -58,10 +58,10 @@
         SET `title` = #{title},
         `description` = #{description},
         `preview_image` = #{previewImage},
-        `pubDate` = #{pubDate},
+        `pub_date` = #{pubDate},
         `link` = #{link},
         `author` = #{author},
-        `media_id` = #{mediaId},
+        `media_name` = #{mediaName},
         WHERE `id` = #{id}
     </update>
 
@@ -71,10 +71,10 @@
             <if test="title != null">`title` = #{title},</if>
             <if test="description != null">`description` = #{description},</if>
             <if test="previewImage != null">`preview_image` = #{previewImage},</if>
-            <if test="pubDate != null">`pubDate` = #{pubDate},</if>
+            <if test="pubDate != null">`pub_date` = #{pubDate},</if>
             <if test="link != null">`link` = #{link},</if>
             <if test="author != null">`author` = #{author},</if>
-            <if test="mediaId != null">`media_id` = #{mediaId},</if>
+            <if test="mediaName != null">`media_name` = #{mediaName},</if>
         </set>
         WHERE `id` = #{id}
     </update>
@@ -82,7 +82,7 @@
     <select id="getNewsByMediaName" resultMap="NewsResultMap">
         SELECT * FROM news
         INNER JOIN media
-        ON news.media_id = media.id
+        ON news.media_name = media.name
         WHERE media.name = #{mediaName}
     </select>
 </mapper>

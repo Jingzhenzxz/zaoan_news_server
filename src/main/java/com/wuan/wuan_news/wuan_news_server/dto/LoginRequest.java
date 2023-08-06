@@ -1,5 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.dto;
 
+import lombok.Data;
+
 import javax.validation.Valid;
 
 /**
@@ -9,23 +11,8 @@ import javax.validation.Valid;
  * @date 2023/07/30/ 13:29
  * @description
  */
+@Data
 public class LoginRequest {
     private String email;
     private String password;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

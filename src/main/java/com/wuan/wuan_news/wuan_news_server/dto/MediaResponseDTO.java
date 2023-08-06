@@ -1,5 +1,8 @@
 package com.wuan.wuan_news.wuan_news_server.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -7,28 +10,9 @@ package com.wuan.wuan_news.wuan_news_server.dto;
  * @date 2023/07/30/ 13:51
  * @description
  */
+@Data
+@AllArgsConstructor
 public class MediaResponseDTO {
     private String message;
     private MediaDTO mediaDTO;
-
-    public MediaResponseDTO(String message, MediaDTO mediaDTO) {
-        this.message = message;
-        this.mediaDTO = mediaDTO;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public MediaDTO getMediaDTO() {
-        return mediaDTO;
-    }
-
-    public void setMediaDTO(MediaDTO mediaDTO) {
-        this.mediaDTO = mediaDTO;
-    }
 }

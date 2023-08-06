@@ -10,5 +10,7 @@ import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
  * @description
  */
 public interface MediaService {
-    MediaDTO createMedia(MediaDTO mediaDTO);
+    MediaDTO createMedia(String mediaName, String rssLink);
+
+    MediaDTO deleteMediaByMediaName(String mediaName);
 }

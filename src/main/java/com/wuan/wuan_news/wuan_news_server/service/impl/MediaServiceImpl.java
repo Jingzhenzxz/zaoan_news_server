@@ -1,9 +1,9 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
-import com.wuan.wuan_news.wuan_news_server.exception.MediaException;
+import com.wuan.wuan_news.wuan_news_server.exception.InvalidRSSFormatException;
+import com.wuan.wuan_news.wuan_news_server.exception.MediaCreationException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
-import com.wuan.wuan_news.wuan_news_server.model.Media;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
 import com.wuan.wuan_news.wuan_news_server.util.MediaUtil;
 import com.wuan.wuan_news.wuan_news_server.util.RssUtil;
@@ -32,12 +32,12 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public MediaDTO createMedia(MediaDTO mediaDTO) {
         if (!rssUtil.isValidRssUrl(mediaDTO.getRssLink())) {
-            throw new MediaException("RSS 链接的格式有误");
+            throw new InvalidRSSFormatException("RSS 链接的格式有误");
         }
 
-        Integer result = mediaMapper.insert(mediaDTO);
+        Integer result = mediaMapper.insert(mediaUtil.convertMediaDTOToMediaModel(mediaDTO));
         if (result == 0) {
-            throw new MediaException("创建媒体失败");
+            throw new MediaCreationException("创建媒体失败");
         } else {
             return mediaUtil.convertMediaModelToMediaDTO(mediaMapper.findByName(mediaDTO.getName()));
         }

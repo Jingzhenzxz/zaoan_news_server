@@ -14,4 +14,6 @@ import java.util.List;
 public interface NewsService {
     List<News> getAllNews();
     News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
+
+    List<News> getNewsByMediaName(String mediaName);
 }

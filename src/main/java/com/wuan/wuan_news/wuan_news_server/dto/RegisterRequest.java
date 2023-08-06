@@ -1,5 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.dto;
 
+import javax.validation.Valid;
+
 /**
  * Created with IntelliJ IDEA.
  *

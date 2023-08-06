@@ -4,11 +4,11 @@ package com.wuan.wuan_news.wuan_news_server.exception;
  * Created with IntelliJ IDEA.
  *
  * @author Jingzhen
- * @date 2023/07/30/ 16:04
+ * @date 2023/08/06/ 11:07
  * @description
  */
-public class NewsException extends RuntimeException {
-    public NewsException(String message) {
+public class UserCreationFailedException extends RuntimeException {
+    public UserCreationFailedException(String message) {
         super(message);
     }
 }

@@ -19,7 +19,9 @@ public interface NewsMapper {
 
     News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
 
-    News insert(NewsDTO newsDTO);
+    int insert(News news);
 
-    News update(NewsDTO newsDTO);
+    int update(News news);
+
+    List<News> getNewsByMediaName(String mediaName);
 }

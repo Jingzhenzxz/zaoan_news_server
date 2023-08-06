@@ -2,6 +2,7 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.MediaResponseDTO;
+import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,8 +34,12 @@ public class MediaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMedia(@Valid @RequestBody MediaDTO mediaDTO) {
+    public ResponseEntity<MediaResponseDTO> createMedia(@Valid @RequestBody MediaDTO mediaDTO, Principal principal) {
+        if (principal == null) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+
         MediaDTO newMediaDTO  = mediaService.createMedia(mediaDTO);
-        return new ResponseEntity<>(new MediaResponseDTO("添加媒体成功", newMediaDTO), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("添加媒体成功", newMediaDTO));
     }
 }

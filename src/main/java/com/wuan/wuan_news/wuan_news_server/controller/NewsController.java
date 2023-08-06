@@ -1,16 +1,16 @@
 package com.wuan.wuan_news.wuan_news_server.controller;
 
+import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +19,6 @@ import java.util.Objects;
  * @date 2023/07/30/ 13:27
  * @description
  */
-
 @RestController
 @RequestMapping("/api/news")
 public class NewsController {
@@ -29,21 +28,38 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    // 获取全站资讯API
+    // 获取全站资讯
     @GetMapping
-    public ResponseEntity<List<News>> getAllNews() {
+    public ResponseEntity<List<News>> getAllNews(Principal principal) {
+        if (principal == null) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+
         List<News> newsList = newsService.getAllNews();
         return ResponseEntity.ok(newsList);
     }
 
-    // 获取单个资讯详情API
-    @GetMapping("/{mediaName}/{newsTitle}")
-    public ResponseEntity<Object> getNewsByMediaNameAndNewsTitle(@PathVariable String mediaName, @PathVariable String newsTitle) {
-        News news = newsService.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
-        if (news != null) {
-            return ResponseEntity.ok(news);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("请求的资讯不存在"); // 在这里你可以添加更具体的错误信息
+    // 获取单个媒体的所有资讯
+    @GetMapping("/{mediaName}")
+    public ResponseEntity<List<News>> getNewsByMediaName(@PathVariable String mediaName, Principal principal) {
+        if (principal == null) {
+            throw new UnauthorizedException("User is not authenticated");
         }
+
+        List<News> newsList = newsService.getNewsByMediaName(mediaName);
+        return ResponseEntity.ok(newsList);
+    }
+
+    // 获取单个资讯详情
+    @GetMapping("/{mediaName}/{newsTitle}")
+    public ResponseEntity<News> getNewsByMediaNameAndNewsTitle(@PathVariable String mediaName,
+                                                               @PathVariable String newsTitle,
+                                                               Principal principal) {
+        if (principal == null) {
+            throw new UnauthorizedException("User is not authenticated");
+        }
+
+        News news = newsService.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
+        return ResponseEntity.ok(news);
     }
 }

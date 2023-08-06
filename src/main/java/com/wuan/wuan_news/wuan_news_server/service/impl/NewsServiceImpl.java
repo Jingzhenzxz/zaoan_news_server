@@ -1,6 +1,6 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
-import com.wuan.wuan_news.wuan_news_server.exception.NewsException;
+import com.wuan.wuan_news.wuan_news_server.exception.NewsNotFoundException;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
@@ -29,7 +29,7 @@ public class NewsServiceImpl implements NewsService {
     public List<News> getAllNews() {
         List<News> allNews = newsMapper.getAllNews();
         if (allNews == null) {
-            throw new NewsException("获取到的资讯为空");
+            throw new NewsNotFoundException("获取到的资讯为空");
         }
         return allNews;
     }
@@ -38,8 +38,17 @@ public class NewsServiceImpl implements NewsService {
     public News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle) {
         News news = newsMapper.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
         if (news == null) {
-            throw new NewsException("获取到的资讯为空");
+            throw new NewsNotFoundException("获取到的资讯为空");
         }
         return news;
+    }
+
+    @Override
+    public List<News> getNewsByMediaName(String mediaName) {
+        List<News> newsList = newsMapper.getNewsByMediaName(mediaName);
+        if (newsList == null) {
+            throw new NewsNotFoundException("获取到的资讯为空");
+        }
+        return newsList;
     }
 }

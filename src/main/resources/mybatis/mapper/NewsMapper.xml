@@ -21,16 +21,17 @@
 
     <select id="getNewsByMediaNameAndNewsTitle" resultMap="NewsResultMap">
         SELECT n.* FROM news n
-        INNER JOIN media m ON n.media_id = m.id
+        INNER JOIN media m
+        ON n.media_id = m.id
         WHERE m.name = #{mediaName} AND n.title = #{newsTitle}
     </select>
 
-    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.dto.NewsDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.model.News" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `news` (`title`, `description`, `preview_image`, `pubDate`, `link`, `author`, `media_id`)
         VALUES (#{title}, #{description}, #{previewImage}, #{pubDate}, #{link}, #{author}, #{mediaId})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.wuan.wuan_news.wuan_news_server.dto.NewsDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertSelective" parameterType="com.wuan.wuan_news.wuan_news_server.model.News" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `news`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null">`title`,</if>
@@ -52,7 +53,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.wuan.wuan_news.wuan_news_server.dto.NewsDTO">
+    <update id="update" parameterType="com.wuan.wuan_news.wuan_news_server.model.News">
         UPDATE `news`
         SET `title` = #{title},
         `description` = #{description},
@@ -64,7 +65,7 @@
         WHERE `id` = #{id}
     </update>
 
-    <update id="updateSelective" parameterType="com.wuan.wuan_news.wuan_news_server.dto.NewsDTO">
+    <update id="updateSelective" parameterType="com.wuan.wuan_news.wuan_news_server.model.News">
         UPDATE `news`
         <set>
             <if test="title != null">`title` = #{title},</if>
@@ -77,4 +78,11 @@
         </set>
         WHERE `id` = #{id}
     </update>
+
+    <select id="getNewsByMediaName" resultMap="NewsResultMap">
+        SELECT * FROM news
+        INNER JOIN media
+        ON news.media_id = media.id
+        WHERE media.name = #{mediaName}
+    </select>
 </mapper>

@@ -10,9 +10,21 @@
         <result column="updated_at" property="updatedAt" />
     </resultMap>
 
-    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.dto.MediaDTO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.model.Media" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO media (name, rss_link)
         VALUES (#{name}, #{rssLink})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.wuan.wuan_news.wuan_news_server.model.Media" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `media`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">`name`,</if>
+            <if test="rssLink != null">`rss_link`,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="rssLink != null">#{rssLink},</if>
+        </trim>
     </insert>
 
     <select id="findByName" resultMap="MediaResultMap">

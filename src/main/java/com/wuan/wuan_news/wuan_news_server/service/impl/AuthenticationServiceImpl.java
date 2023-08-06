@@ -1,18 +1,13 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
-import com.wuan.wuan_news.wuan_news_server.dto.LoginResponse;
 import com.wuan.wuan_news.wuan_news_server.dto.RegisterRequest;
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
-import com.wuan.wuan_news.wuan_news_server.exception.PasswordException;
-import com.wuan.wuan_news.wuan_news_server.exception.UserException;
-import com.wuan.wuan_news.wuan_news_server.model.User;
+import com.wuan.wuan_news.wuan_news_server.exception.*;
 import com.wuan.wuan_news.wuan_news_server.service.AuthenticationService;
 import com.wuan.wuan_news.wuan_news_server.service.UserService;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
 import com.wuan.wuan_news.wuan_news_server.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,12 +33,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDTO userDTO = userService.findByEmail(email);
 
         if (userDTO == null) {
-            throw new UserException("没有找到 " + email + " 对应的用户");
+            throw new UserNotFoundException("没有找到 " + email + " 对应的用户");
         }
 
         boolean passwordMatch = PasswordUtil.verifyPassword(password, userDTO.getPassword());
         if (!passwordMatch) {
-            throw new PasswordException("输入的密码有误");
+            throw new InvalidPasswordException("输入的密码有误");
         }
 
         return userDTO;
@@ -53,12 +48,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public UserDTO register(RegisterRequest registerRequest) {
         // 检查密码和确认密码是否相同
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new PasswordException("Password and confirm password do not match");
+            throw new PasswordMismatchException("Password and confirm password do not match");
         }
 
         // 检查邮箱是否已经存在
         if (userService.findByEmail(registerRequest.getEmail()) != null) {
-            throw new UserException("UserEmail already exists!");
+            throw new UserEmailAlreadyExistsException("UserEmail already exists!");
         }
 
         // 创建新用户
@@ -70,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 将新用户插入数据库
         UserDTO userDTO = userService.createNewUser(newUser);
         if (userDTO == null) {
-            throw new UserException("创建新用户失败");
+            throw new UserCreationFailedException("创建新用户失败");
         }
 
         // 返回新创建的用户

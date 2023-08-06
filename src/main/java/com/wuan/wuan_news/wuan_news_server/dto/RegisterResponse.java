@@ -4,18 +4,16 @@ package com.wuan.wuan_news.wuan_news_server.dto;
  * Created with IntelliJ IDEA.
  *
  * @author Jingzhen
- * @date 2023/07/30/ 16:38
+ * @date 2023/08/06/ 11:34
  * @description
  */
-public class LoginResponse {
+public class RegisterResponse {
     private String username;
     private String email;
-    private String token;
 
-    public LoginResponse(String username, String email, String token) {
+    public RegisterResponse(String username, String email) {
         this.username = username;
         this.email = email;
-        this.token = token;
     }
 
     public String getUsername() {
@@ -32,13 +30,5 @@ public class LoginResponse {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

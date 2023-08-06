@@ -22,6 +22,8 @@ public class UserUtil {
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
 
         return userDTO;
     }
@@ -36,6 +38,8 @@ public class UserUtil {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
+        user.setCreatedAt(userDTO.getCreatedAt());
+        user.setUpdatedAt(userDTO.getUpdatedAt());
 
         return user;
     }

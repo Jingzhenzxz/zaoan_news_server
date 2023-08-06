@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper {
 
-    int insert(UserDTO newUser);
+    int insert(User newUser);
 
     User getUserByEmail(String email);
 }

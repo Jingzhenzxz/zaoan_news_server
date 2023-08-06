@@ -41,10 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 // 定义 URL 的访问权限：
                 .authorizeRequests()
-                // /api/groups/** 的所有请求都被允许（不需要认证），其他所有请求都需要被认证
-                // .antMatchers("/api/groups/**").permitAll()
                 // 路径 /api/authentication/** 的所有请求都被允许（不需要认证），其他所有请求都需要被认证
-                // .antMatchers("/api/authentication/**").permitAll()
+                .antMatchers("/api/authentication/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 在 UsernamePasswordAuthenticationFilter 过滤器之前添加 JwtFilter 过滤器

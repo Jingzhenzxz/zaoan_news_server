@@ -28,6 +28,8 @@ public class NewsUtil {
         newsDTO.setPreviewImage(news.getPreviewImage());
         newsDTO.setPubDate(news.getPubDate());
         newsDTO.setMediaId(news.getMediaId());
+        newsDTO.setCreatedAt(news.getCreatedAt());
+        newsDTO.setUpdatedAt(news.getUpdatedAt());
 
         return newsDTO;
     }
@@ -46,6 +48,8 @@ public class NewsUtil {
         news.setPreviewImage(newsDTO.getPreviewImage());
         news.setTitle(newsDTO.getTitle());
         news.setPubDate(newsDTO.getPubDate());
+        news.setCreatedAt(newsDTO.getCreatedAt());
+        news.setUpdatedAt(newsDTO.getUpdatedAt());
 
         return news;
     }

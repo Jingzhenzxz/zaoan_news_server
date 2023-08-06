@@ -4,25 +4,34 @@
 
     <resultMap id="UserResultMap" type="com.wuan.wuan_news.wuan_news_server.model.User">
         <id column="id" property="id" />
-        <result column="title" property="title" />
-        <result column="description" property="description" />
-        <result column="preview_image" property="previewImage" />
-        <result column="pubDate" property="pubDate" />
-        <result column="link" property="link" />
-        <result column="author" property="author" />
-        <result column="media_id" property="media.id" />
-        <result column="created_at" property="createdAt" />
-        <result column="updated_at" property="updatedAt" />
+        <result column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
     </resultMap>
 
-    <select id="getAllNews" resultMap="NewsResultMap">
-        SELECT * FROM news
+    <select id="getUserByEmail" resultMap="UserResultMap">
+        SELECT * FROM users WHERE email = #{email};
     </select>
 
-    <select id="getNewsByMediaNameAndNewsTitle" resultMap="NewsResultMap">
-        SELECT n.* FROM news n
-        INNER JOIN media m ON n.media_id = m.id
-        WHERE m.name = #{mediaName} AND n.title = #{newsTitle}
+    <select id="getUserByUsername" resultMap="UserResultMap" parameterType="string">
+        SELECT * FROM users WHERE username = #{username};
     </select>
 
+    <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.model.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (username, email, password)
+        VALUES (#{username}, #{email}, #{password});
+    </insert>
+
+    <update id="update" parameterType="com.wuan.wuan_news.wuan_news_server.model.User">
+        UPDATE users
+        SET
+        username = #{username},
+        email = #{email},
+        password = #{password},
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM users WHERE id = #{id};
+    </delete>
 </mapper>

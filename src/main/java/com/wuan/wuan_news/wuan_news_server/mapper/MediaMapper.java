@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Mapper
 public interface MediaMapper {
-    Integer insert(MediaDTO mediaDTO);
+    Integer insert(Media media);
 
     Media findByName(String name);
     List<Media> getAllMedias();

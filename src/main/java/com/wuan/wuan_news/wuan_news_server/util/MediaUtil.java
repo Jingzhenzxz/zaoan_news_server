@@ -22,6 +22,8 @@ public class MediaUtil {
         MediaDTO mediaDTO = new MediaDTO();
         mediaDTO.setName(media.getName());
         mediaDTO.setRssLink(media.getRssLink());
+        mediaDTO.setCreatedAt(media.getCreatedAt());
+        mediaDTO.setUpdatedAt(media.getUpdatedAt());
 
         return mediaDTO;
     }
@@ -34,6 +36,8 @@ public class MediaUtil {
         Media media = new Media();
         media.setName(mediaDTO.getName());
         media.setRssLink(mediaDTO.getRssLink());
+        media.setCreatedAt(mediaDTO.getCreatedAt());
+        media.setUpdatedAt(mediaDTO.getUpdatedAt());
 
         return media;
     }

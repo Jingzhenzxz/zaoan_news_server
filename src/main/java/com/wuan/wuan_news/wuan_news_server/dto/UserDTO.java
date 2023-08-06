@@ -1,5 +1,9 @@
 package com.wuan.wuan_news.wuan_news_server.dto;
 
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -7,32 +11,11 @@ package com.wuan.wuan_news.wuan_news_server.dto;
  * @date 2023/07/30/ 16:15
  * @description
  */
+@Data
 public class UserDTO {
     private String username;
     private String email;
     private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

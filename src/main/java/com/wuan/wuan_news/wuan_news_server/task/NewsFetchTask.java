@@ -2,6 +2,8 @@ package com.wuan.wuan_news.wuan_news_server.task;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
+import com.wuan.wuan_news.wuan_news_server.exception.NewsCreationException;
+import com.wuan.wuan_news.wuan_news_server.exception.NewsUpdateException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
 import com.wuan.wuan_news.wuan_news_server.model.Media;
@@ -57,9 +59,15 @@ public class NewsFetchTask {
                 NewsDTO existingNews = newsUtil.convertNewsModelToNewsDTO(newsMapper.getNewsByMediaNameAndNewsTitle(mediaDTO.getName(), newsDTO.getTitle()));
 
                 if (existingNews == null) {
-                    newsMapper.insert(newsDTO);
+                    int result = newsMapper.insert(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                    if (result == 0) {
+                        throw new NewsCreationException("保存资讯失败");
+                    }
                 } else if (newsDTO.getPubDate().isAfter(existingNews.getPubDate())) {
-                    newsMapper.update(newsDTO);
+                    int result = newsMapper.update(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                    if (result == 0) {
+                        throw new NewsUpdateException("更新资讯失败");
+                    }
                 }
             }
         }

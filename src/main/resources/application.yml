@@ -1,0 +1,24 @@
+server:
+  port: 8087
+  servlet:
+    context-path: /wuan_news
+
+spring:
+  application:
+    name: wuan_news_server
+  datasource:
+    url: jdbc:mysql://localhost:3306/wuan_news?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  type-aliases-package: com.wuan.wuan_news.wuan_news_server.model
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# The jwt.secret has to be very long
+jwt:
+  secret: ThisIsASecretKeyWhichIsAtLeast64CharactersLongForHS512Algorithm*
+  expiration: 86400000

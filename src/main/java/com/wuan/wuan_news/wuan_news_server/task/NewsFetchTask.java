@@ -44,12 +44,12 @@ public class NewsFetchTask {
 
     @Scheduled(cron = "0 0 * * * *")
     public void fetchNewsFromRss() {
-        /*
-        * 获取所有media
-        * Stream.of(T... values) 方法接收的是一组分散的值而不是一个集合，它将传入的值转换为一个Stream对象。
-        * mediaMapper.getAllMedias() 方法返回的是一个集合。
-        * 所以应该直接将集合转换为 Stream，而不是使用 Stream.of。我们可以直接调用集合的 stream() 方法来创建一个流。
-        */
+        /**
+         * 获取所有media
+         * Stream.of(T... values) 方法接收的是一组分散的值而不是一个集合，它将传入的值转换为一个Stream对象。
+         * mediaMapper.getAllMedias() 方法返回的是一个集合。
+         * 所以应该直接将集合转换为 Stream，而不是使用 Stream.of。我们可以直接调用集合的 stream() 方法来创建一个流。
+         */
         List<MediaDTO> mediaDTOs = mediaMapper.getAllMedias().stream().map(mediaUtil::convertMediaModelToMediaDTO).collect(Collectors.toList());
         // 遍历所有的media，从RSS源获取信息并保存
         for (MediaDTO mediaDTO : mediaDTOs) {

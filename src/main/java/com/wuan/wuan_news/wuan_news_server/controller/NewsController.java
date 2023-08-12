@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import java.util.List;
  * @date 2023/07/30/ 13:27
  * @description
  */
+@Api(tags = "News Endpoints", value = "Endpoints for managing news")
 @RestController
 @RequestMapping("/api/news")
 public class NewsController {
@@ -29,6 +31,11 @@ public class NewsController {
     }
 
     // 获取全站资讯
+    @ApiOperation(value = "Get all news")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved news list"),
+            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
+    })
     @GetMapping
     public ResponseEntity<List<News>> getAllNews(Principal principal) {
         if (principal == null) {
@@ -40,8 +47,15 @@ public class NewsController {
     }
 
     // 获取单个媒体的所有资讯
+    @ApiOperation(value = "Get news by media name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved news list by media name"),
+            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
+    })
     @GetMapping("/{mediaName}")
-    public ResponseEntity<List<News>> getNewsByMediaName(@PathVariable String mediaName, Principal principal) {
+    public ResponseEntity<List<News>> getNewsByMediaName(
+            @ApiParam(value = "Media name to retrieve news for", required = true)
+            @PathVariable String mediaName, Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
@@ -51,10 +65,18 @@ public class NewsController {
     }
 
     // 获取单个资讯详情
+    @ApiOperation(value = "Get specific news detail by media name and news title")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved specific news detail"),
+            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
+    })
     @GetMapping("/{mediaName}/{newsTitle}")
-    public ResponseEntity<News> getNewsByMediaNameAndNewsTitle(@PathVariable String mediaName,
-                                                               @PathVariable String newsTitle,
-                                                               Principal principal) {
+    public ResponseEntity<News> getNewsByMediaNameAndNewsTitle(
+            @ApiParam(value = "Media name of the news", required = true)
+            @PathVariable String mediaName,
+            @ApiParam(value = "Title of the news", required = true)
+            @PathVariable String newsTitle,
+            Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }

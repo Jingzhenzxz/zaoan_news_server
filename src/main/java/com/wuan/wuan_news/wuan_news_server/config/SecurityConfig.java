@@ -20,11 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    /*
-    * 如果把 WebSecurityConfigurerAdapter 换成最新的
-    * SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>，
-    * 那么会返回401错误，因为 WebSecurityConfigurerAdapter 通常会覆盖一些默认的配置，而 SecurityConfigurerAdapter 则不会。
-    */
+    /**
+     * 如果把 WebSecurityConfigurerAdapter 换成最新的
+     * SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>，
+     * 那么会返回401错误，因为 WebSecurityConfigurerAdapter 通常会覆盖一些默认的配置，而 SecurityConfigurerAdapter 则不会。
+     */
     private final JwtFilter jwtFilter;
 
     @Autowired
@@ -43,6 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 路径 /api/authentication/** 的所有请求都被允许（不需要认证），其他所有请求都需要被认证
                 .antMatchers("/api/authentication/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                // Allow Swagger UI
+                .antMatchers("/swagger-ui/**").permitAll()
+                // Allow API docs
+                .antMatchers("/v3/api-docs/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 在 UsernamePasswordAuthenticationFilter 过滤器之前添加 JwtFilter 过滤器

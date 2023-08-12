@@ -3,7 +3,6 @@ package com.wuan.wuan_news.wuan_news_server.config;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -15,7 +14,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Collections;
 
 /**
  * Created with IntelliJ IDEA.
@@ -55,7 +53,7 @@ public class JwtFilter extends GenericFilterBean {
 
             // 创建一个认证令牌（Authentication Token），并将其设置到 Spring Security 的上下文中
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(new SimpleGrantedAuthority("USERNAME_" + username)));
+                    new UsernamePasswordAuthenticationToken(email, null, null);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 

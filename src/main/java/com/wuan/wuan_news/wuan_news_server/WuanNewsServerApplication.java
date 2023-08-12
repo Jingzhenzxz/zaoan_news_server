@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * Created with IntelliJ IDEA.

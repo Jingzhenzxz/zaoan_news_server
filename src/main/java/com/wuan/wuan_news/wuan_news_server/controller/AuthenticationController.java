@@ -3,7 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 import com.wuan.wuan_news.wuan_news_server.dto.*;
 import com.wuan.wuan_news.wuan_news_server.service.AuthenticationService;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +25,7 @@ import javax.validation.Valid;
  * @description
  */
 
+@Api(tags = "Authentication Endpoints", value = "Endpoints for user registration and login")
 @RestController
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
@@ -37,15 +38,30 @@ public class AuthenticationController {
         this.jwtUtil = jwtUtil;
     }
 
+    @ApiOperation(value = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "User registered successfully"),
+            @ApiResponse(code = 400, message = "Bad Request, invalid user input")
+    })
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<RegisterResponse> register(
+            @ApiParam(value = "Registration request object", required = true)
+            @Valid @RequestBody RegisterRequest registerRequest) {
         UserDTO userDTO = authenticationService.register(registerRequest);
         RegisterResponse registerResponse = new RegisterResponse(userDTO.getUsername(), userDTO.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
     }
 
+    @ApiOperation(value = "Login with email and password")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Login successful"),
+            @ApiResponse(code = 400, message = "Bad Request, invalid login details"),
+            @ApiResponse(code = 401, message = "Unauthorized, invalid credentials")
+    })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(
+            @ApiParam(value = "Login request object", required = true)
+            @Valid @RequestBody LoginRequest loginRequest) {
         UserDTO userDTO = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
         String token = jwtUtil.generateToken(userDTO);
         LoginResponse loginResponse = new LoginResponse(userDTO.getUsername(), userDTO.getEmail(), token);

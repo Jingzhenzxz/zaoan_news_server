@@ -51,19 +51,19 @@ public class PasswordUtil {
         String salt = hashedPassword.substring(0, SALT_LENGTH * 2);
         // 获取哈希
         String hash = hashedPassword.substring(SALT_LENGTH * 2);
-        /*
-        * 检查密码是否匹配
-        * MessageDigest.isEqual是一个静态方法，用于比较两个字节数组是否相等。最主要的特性是它是"时间常量的"，这意味着无论输入的内容是什么，
-        * 这个方法执行的时间是相同的。这个特性非常重要，因为它可以防止通过测量比较操作的时间来获取敏感信息（例如密码或哈希值）的攻击，
-        * 这种攻击被称为"时间侧通道攻击"。
-        */
+        /**
+         * 检查密码是否匹配
+         * MessageDigest.isEqual是一个静态方法，用于比较两个字节数组是否相等。最主要的特性是它是"时间常量的"，这意味着无论输入的内容是什么，
+         * 这个方法执行的时间是相同的。这个特性非常重要，因为它可以防止通过测量比较操作的时间来获取敏感信息（例如密码或哈希值）的攻击，
+         * 这种攻击被称为"时间侧通道攻击"。
+         */
         return MessageDigest.isEqual(hashPassword(salt + password).getBytes(), hash.getBytes());
     }
 
-    /*
-    * 将字节数组转化为十六进制字符串。
-    * 因为字节的值范围是 0-255，直接输出为字符可能无法正常显示，转化为十六进制字符串可以方便地进行显示和存储。
-    */
+    /**
+     * 将字节数组转化为十六进制字符串。
+     * 因为字节的值范围是 0-255，直接输出为字符可能无法正常显示，转化为十六进制字符串可以方便地进行显示和存储。
+     */
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {

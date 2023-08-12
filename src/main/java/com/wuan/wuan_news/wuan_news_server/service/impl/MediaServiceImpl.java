@@ -1,6 +1,5 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
-import com.sun.media.jfxmedia.MediaException;
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.InvalidRSSFormatException;
 import com.wuan.wuan_news.wuan_news_server.exception.MediaCreationException;
@@ -28,6 +27,7 @@ public class MediaServiceImpl implements MediaService {
     private final RssUtil rssUtil;
     private final MediaUtil mediaUtil;
     private final NewsFetchTask newsFetchTask;
+
     @Autowired
     public MediaServiceImpl(MediaMapper mediaMapper, RssUtil rssUtil, MediaUtil mediaUtil, NewsFetchTask newsFetchTask) {
         this.mediaMapper = mediaMapper;

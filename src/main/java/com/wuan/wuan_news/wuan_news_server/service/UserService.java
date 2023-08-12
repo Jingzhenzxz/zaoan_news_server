@@ -11,5 +11,6 @@ import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
  */
 public interface UserService {
     UserDTO createNewUser(UserDTO newUser);
+
     UserDTO findByEmail(String email);
 }

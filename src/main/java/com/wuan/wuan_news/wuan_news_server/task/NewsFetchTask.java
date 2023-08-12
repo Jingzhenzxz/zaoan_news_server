@@ -27,11 +27,11 @@ import java.util.stream.Stream;
  */
 @Component
 public class NewsFetchTask {
-    private MediaMapper mediaMapper;
-    private NewsMapper newsMapper;
-    private RssUtil rssUtil;
-    private MediaUtil mediaUtil;
-    private NewsUtil newsUtil;
+    private final MediaMapper mediaMapper;
+    private final NewsMapper newsMapper;
+    private final RssUtil rssUtil;
+    private final MediaUtil mediaUtil;
+    private final NewsUtil newsUtil;
 
     @Autowired
     public NewsFetchTask(MediaMapper mediaMapper, NewsMapper newsMapper, RssUtil rssUtil, MediaUtil mediaUtil, NewsUtil newsUtil) {
@@ -44,9 +44,9 @@ public class NewsFetchTask {
 
     @Scheduled(cron = "0 0 * * * *")
     public void fetchNewsFromRss() {
-        /**
+        /*
          * 获取所有media
-         * Stream.of(T... values) 方法接收的是一组分散的值而不是一个集合，它将传入的值转换为一个Stream对象。
+         * Stream.of(T... values) 方法接收的是一组分散的值而不是一个集合，它将传入的值转换为一个 Stream 对象。
          * mediaMapper.getAllMedias() 方法返回的是一个集合。
          * 所以应该直接将集合转换为 Stream，而不是使用 Stream.of。我们可以直接调用集合的 stream() 方法来创建一个流。
          */

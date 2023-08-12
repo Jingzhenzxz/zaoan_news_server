@@ -27,7 +27,12 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
     /**
-     * 文档基本信息
+     * Created with IntelliJ IDEA.
+     *
+     * @author Jingzhen
+     * @date 2023/8/12 18:23
+     * @description Swagger 文档的基本信息
+     * @return: springfox.documentation.service.ApiInfo
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()

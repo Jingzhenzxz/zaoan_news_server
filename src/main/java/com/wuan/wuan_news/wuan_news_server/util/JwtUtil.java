@@ -28,9 +28,9 @@ public class JwtUtil {
     private long jwtExpiration;
 
     private SecretKey getSecretKey() {
-        /**
-         * 从配置的密钥字符串生成一个SecretKey对象，用于签名和验证JWT。
-         * 这个SecretKey对象是对称的，即同一个密钥既用于签名JWT也用于验证JWT。
+        /*
+         * 从配置的密钥字符串生成一个 SecretKey 对象，用于签名和验证 JWT。
+         * 这个 SecretKey 对象是对称的，即同一个密钥既用于签名JWT也用于验证 JWT。
          */
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
@@ -75,9 +75,9 @@ public class JwtUtil {
     // }
 
     public String getEmailFromJwt(String authHeader) {
-        /**
+        /*
          * 从给定的JWT中提取用户ID
-         * 使用Jwts.parserBuilder()来创建一个新的JWT解析器
+         * 使用 Jwts.parserBuilder() 来创建一个新的JWT解析器
          */
         String token = authHeader.replace("Bearer ", "");
         Claims claims = Jwts.parserBuilder()
@@ -92,9 +92,9 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    /**
-     * 验证一个JWT。它试图解析这个JWT，如果可以成功解析（即JWT格式正确、签名正确且未过期），
-     * 那么返回true。如果在解析过程中出现任何异常，那么返回false。
+    /*
+     * 验证一个 JWT。它试图解析这个 JWT，如果可以成功解析（即 JWT 格式正确、签名正确且未过期），
+     * 那么返回 true。如果在解析过程中出现任何异常，那么返回 false。
      */
     public boolean validateToken(String authHeader) {
         try {

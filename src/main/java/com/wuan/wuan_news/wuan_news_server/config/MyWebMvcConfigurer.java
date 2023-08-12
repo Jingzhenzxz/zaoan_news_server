@@ -16,7 +16,7 @@ public class MyWebMvcConfigurer extends WebMvcConfigurationSupport {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // swagger配置
+        // swagger 配置
         registry.
                 addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")

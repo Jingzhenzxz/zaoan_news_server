@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    /**
+    /*
      * 如果把 WebSecurityConfigurerAdapter 换成最新的
      * SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>，
      * 那么会返回401错误，因为 WebSecurityConfigurerAdapter 通常会覆盖一些默认的配置，而 SecurityConfigurerAdapter 则不会。

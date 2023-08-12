@@ -1,9 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.util;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
-import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
 import com.wuan.wuan_news.wuan_news_server.model.Media;
-import com.wuan.wuan_news.wuan_news_server.model.User;
 import org.springframework.stereotype.Service;
 
 /**

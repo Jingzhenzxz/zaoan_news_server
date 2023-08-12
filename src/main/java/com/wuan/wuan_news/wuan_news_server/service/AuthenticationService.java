@@ -1,9 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
-import com.wuan.wuan_news.wuan_news_server.dto.LoginRequest;
 import com.wuan.wuan_news.wuan_news_server.dto.RegisterRequest;
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
-import com.wuan.wuan_news.wuan_news_server.model.User;
 
 /**
  * Created with IntelliJ IDEA.

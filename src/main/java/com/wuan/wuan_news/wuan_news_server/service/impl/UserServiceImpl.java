@@ -2,11 +2,9 @@ package com.wuan.wuan_news.wuan_news_server.service.impl;
 
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.UserCreationFailedException;
-import com.wuan.wuan_news.wuan_news_server.exception.UserNotFoundException;
 import com.wuan.wuan_news.wuan_news_server.mapper.UserMapper;
 import com.wuan.wuan_news.wuan_news_server.model.User;
 import com.wuan.wuan_news.wuan_news_server.service.UserService;
-import com.wuan.wuan_news.wuan_news_server.util.MediaUtil;
 import com.wuan.wuan_news.wuan_news_server.util.UserUtil;
 import org.springframework.stereotype.Service;
 

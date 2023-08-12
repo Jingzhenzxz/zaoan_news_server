@@ -1,6 +1,5 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.model.Media;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,6 +17,7 @@ public interface MediaMapper {
     Integer insert(Media media);
 
     Media findByName(String name);
+
     List<Media> getAllMedias();
 
     int deleteByName(String name);

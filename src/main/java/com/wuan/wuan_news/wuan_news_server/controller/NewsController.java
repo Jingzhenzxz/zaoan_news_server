@@ -1,7 +1,8 @@
 package com.wuan.wuan_news.wuan_news_server.controller;
 
+import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
+import com.wuan.wuan_news.wuan_news_server.dto.NewsResponseDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
-import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,13 +39,13 @@ public class NewsController {
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @GetMapping
-    public ResponseEntity<List<News>> getAllNews(Principal principal) {
+    public ResponseEntity<NewsResponseDTO> getAllNews(Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        List<News> newsList = newsService.getAllNews();
-        return ResponseEntity.ok(newsList);
+        List<NewsDTO> newsDTOList = newsService.getAllNews();
+        return ResponseEntity.ok(new NewsResponseDTO(newsDTOList));
     }
 
     // 获取单个媒体的所有资讯
@@ -53,15 +55,15 @@ public class NewsController {
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @GetMapping("/{mediaName}")
-    public ResponseEntity<List<News>> getNewsByMediaName(
+    public ResponseEntity<NewsResponseDTO> getNewsByMediaName(
             @ApiParam(value = "Media name to retrieve news for", required = true)
             @PathVariable String mediaName, Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        List<News> newsList = newsService.getNewsByMediaName(mediaName);
-        return ResponseEntity.ok(newsList);
+        List<NewsDTO> newsDTOList = newsService.getNewsByMediaName(mediaName);
+        return ResponseEntity.ok(new NewsResponseDTO(newsDTOList));
     }
 
     // 获取单个资讯详情
@@ -71,7 +73,7 @@ public class NewsController {
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @GetMapping("/{mediaName}/{newsTitle}")
-    public ResponseEntity<News> getNewsByMediaNameAndNewsTitle(
+    public ResponseEntity<NewsResponseDTO> getNewsByMediaNameAndNewsTitle(
             @ApiParam(value = "Media name of the news", required = true)
             @PathVariable String mediaName,
             @ApiParam(value = "Title of the news", required = true)
@@ -81,7 +83,7 @@ public class NewsController {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        News news = newsService.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
-        return ResponseEntity.ok(news);
+        NewsDTO newsDTO = newsService.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
+        return ResponseEntity.ok(new NewsResponseDTO(Collections.singletonList(newsDTO)));
     }
 }

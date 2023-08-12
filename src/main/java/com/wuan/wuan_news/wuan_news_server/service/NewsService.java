@@ -1,5 +1,6 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
+import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
  * @description
  */
 public interface NewsService {
-    List<News> getAllNews();
-    News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
+    List<NewsDTO> getAllNews();
+    NewsDTO getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
 
-    List<News> getNewsByMediaName(String mediaName);
+    List<NewsDTO> getNewsByMediaName(String mediaName);
 }

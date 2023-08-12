@@ -47,25 +47,25 @@ public class MediaController {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        MediaDTO createdMediaDTO  = mediaService.createMedia(mediaRequestDTO.getName(), mediaRequestDTO.getRssLink());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("添加媒体成功", createdMediaDTO));
+        MediaDTO createdMediaDTO = mediaService.createMedia(mediaRequestDTO.getName(), mediaRequestDTO.getRssLink());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO(createdMediaDTO));
     }
 
     @ApiOperation(value = "Delete media by media name")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Media deleted successfully"),
+            @ApiResponse(code = 204, message = "Media deleted successfully"),
             @ApiResponse(code = 400, message = "Bad Request, invalid media name"),
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @DeleteMapping("/{mediaName}")
-    public ResponseEntity<MediaResponseDTO> deleteMedia(
+    public ResponseEntity<Void> deleteMedia(
             @ApiParam(value = "Media name to delete", required = true)
             @PathVariable String mediaName, Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        MediaDTO deletedMediaDTO  = mediaService.deleteMediaByMediaName(mediaName);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO("删除媒体成功", deletedMediaDTO));
+        MediaDTO deletedMediaDTO = mediaService.deleteMediaByMediaName(mediaName);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

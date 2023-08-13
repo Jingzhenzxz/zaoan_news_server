@@ -42,7 +42,8 @@ public class MediaController {
     @PostMapping
     public ResponseEntity<MediaResponseDTO> createMedia(
             @ApiParam(value = "Media creation request object", required = true)
-            @Valid @RequestBody MediaRequestDTO mediaRequestDTO, Principal principal) {
+            @Valid @RequestBody MediaRequestDTO mediaRequestDTO,
+            Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }

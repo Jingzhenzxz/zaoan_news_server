@@ -6,17 +6,16 @@ import com.wuan.wuan_news.wuan_news_server.exception.NewsCreationException;
 import com.wuan.wuan_news.wuan_news_server.exception.NewsUpdateException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
-import com.wuan.wuan_news.wuan_news_server.model.Media;
 import com.wuan.wuan_news.wuan_news_server.util.MediaUtil;
 import com.wuan.wuan_news.wuan_news_server.util.NewsUtil;
 import com.wuan.wuan_news.wuan_news_server.util.RssUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +25,7 @@ import java.util.stream.Stream;
  * @description
  */
 @Component
+@Slf4j
 public class NewsFetchTask {
     private final MediaMapper mediaMapper;
     private final NewsMapper newsMapper;
@@ -42,7 +42,7 @@ public class NewsFetchTask {
         this.newsUtil = newsUtil;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(fixedRate = 3600000)
     public void fetchNewsFromRss() {
         /*
          * 获取所有media

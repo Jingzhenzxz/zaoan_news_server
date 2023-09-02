@@ -16,8 +16,6 @@ import java.util.List;
 public interface TopicService {
     TopicDTO createTopicAndAssociateNews(String topicName);
     TopicDetailDTO getTopicDetailByName(String topicName);
-
     List<TopicCardDTO> getAllTopicCards();
-
     TopicCardDTO getTopicCardByTopicName(String topicName);
 }

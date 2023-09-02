@@ -12,6 +12,7 @@ import com.wuan.wuan_news.wuan_news_server.model.Topic;
 import com.wuan.wuan_news.wuan_news_server.service.TopicService;
 import com.wuan.wuan_news.wuan_news_server.util.TopicUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @date 2023/09/02/ 15:41
  * @description
  */
+@Service
 public class TopicServiceImpl implements TopicService {
     private final TopicMapper topicMapper;
     private final NewsMapper newsMapper;

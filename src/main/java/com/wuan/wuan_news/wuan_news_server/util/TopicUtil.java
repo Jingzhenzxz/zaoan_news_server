@@ -4,6 +4,7 @@ import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDTO;
 import com.wuan.wuan_news.wuan_news_server.model.Media;
 import com.wuan.wuan_news.wuan_news_server.model.Topic;
+import org.springframework.stereotype.Service;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,6 +13,7 @@ import com.wuan.wuan_news.wuan_news_server.model.Topic;
  * @date 2023/09/02/ 16:00
  * @description
  */
+@Service
 public class TopicUtil {
     public TopicDTO convertTopicModelToTopicDTO(Topic topic) {
         if (topic == null) {

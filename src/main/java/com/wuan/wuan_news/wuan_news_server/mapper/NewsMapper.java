@@ -24,4 +24,6 @@ public interface NewsMapper {
     int update(News news);
 
     List<News> getNewsByMediaName(String mediaName);
+
+    List<News> getNewsByTitleContaining(String topicName);
 }

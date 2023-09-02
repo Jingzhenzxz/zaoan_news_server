@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuan.wuan_news.wuan_news_server.mapper.NewsTopicMapper">
+
+    <!-- Result Map for News -->
+    <resultMap id="NewsResultMap" type="com.wuan.wuan_news.wuan_news_server.model.News">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="preview_image" property="previewImage" />
+        <result column="pub_date" property="pubDate" />
+        <result column="link" property="link" />
+        <result column="author" property="author" />
+        <result column="media_name" property="mediaName" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- Fetch News by Topic ID -->
+    <select id="getNewsByTopicId" resultMap="NewsResultMap" parameterType="long">
+        SELECT
+        n.*
+        FROM news n
+        JOIN news_topic nt ON n.id = nt.news_id
+        WHERE nt.topic_id = #{id}
+    </select>
+
+    <!-- Insert NewsTopic -->
+    <insert id="create" parameterType="com.wuan.wuan_news.wuan_news_server.model.NewsTopic">
+        INSERT INTO news_topic (news_id, topic_id)
+        VALUES (#{newsId}, #{topicId})
+    </insert>
+
+</mapper>

@@ -61,7 +61,7 @@ public class RssUtil {
                 NewsDTO newsDTO = new NewsDTO();
                 newsDTO.setTitle(entry.getTitle());
                 newsDTO.setDescription(entry.getDescription().getValue());
-                newsDTO.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                newsDTO.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.of("UTC+8")).toLocalDateTime());
                 newsDTO.setLink(entry.getLink());
                 newsDTO.setAuthor(entry.getAuthor());
                 newsList.add(newsDTO);

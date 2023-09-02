@@ -85,4 +85,10 @@
         ON news.media_name = media.name
         WHERE media.name = #{mediaName}
     </select>
+
+    <select id="getNewsByTitleContaining" resultMap="NewsResultMap" parameterType="string">
+        SELECT *
+        FROM news
+        WHERE title LIKE CONCAT('%', #{topicName}, '%')
+    </select>
 </mapper>

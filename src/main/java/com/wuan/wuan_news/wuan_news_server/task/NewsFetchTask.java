@@ -61,14 +61,14 @@ public class NewsFetchTask {
                 if (existingNews == null) {
                     newsDTO.setMediaName(mediaDTO.getName());
 
-                    int result = newsMapper.insert(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                    int result = newsMapper.insertSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
                     if (result == 0) {
                         throw new NewsCreationException("保存资讯失败");
                     }
                 } else if (newsDTO.getPubDate().isAfter(existingNews.getPubDate())) {
                     newsDTO.setMediaName(mediaDTO.getName());
 
-                    int result = newsMapper.update(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                    int result = newsMapper.updateSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
                     if (result == 0) {
                         throw new NewsUpdateException("更新资讯失败");
                     }

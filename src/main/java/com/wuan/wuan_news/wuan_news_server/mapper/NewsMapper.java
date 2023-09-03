@@ -20,8 +20,10 @@ public interface NewsMapper {
     News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
 
     int insert(News news);
+    int insertSelective(News news);
 
     int update(News news);
+    int updateSelective(News news);
 
     List<News> getNewsByMediaName(String mediaName);
 

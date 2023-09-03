@@ -27,7 +27,7 @@
         SET
         username = #{username},
         email = #{email},
-        password = #{password},
+        password = #{password}
         WHERE id = #{id}
     </update>
 

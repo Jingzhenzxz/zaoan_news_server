@@ -7,6 +7,9 @@ spring:
   application:
     name: wuan_news_server
   datasource:
+#    url: jdbc:mysql://127.0.0.1:3306/wuan_news?useSSL=false&serverTimezone=UTC%2B8&useUnicode=true&characterEncoding=UTF-8
+#    username: root
+#    password: 12345
     url: jdbc:mysql://130.162.148.198:3306/wuan_news?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     username: wuan_news
     password: Jwk4MYM7kyiJJr6H

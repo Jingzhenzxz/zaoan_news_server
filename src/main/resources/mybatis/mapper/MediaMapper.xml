@@ -19,11 +19,11 @@
         INSERT INTO `media`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">`name`,</if>
-            <if test="rssLink != null">`rss_link`,</if>
+            <if test="rssLink != null">`rss_link`</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
-            <if test="rssLink != null">#{rssLink},</if>
+            <if test="rssLink != null">#{rssLink}</if>
         </trim>
     </insert>
 

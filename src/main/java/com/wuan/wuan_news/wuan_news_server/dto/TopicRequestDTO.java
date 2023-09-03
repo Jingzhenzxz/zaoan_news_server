@@ -14,8 +14,4 @@ import java.time.LocalDateTime;
 @Data
 public class TopicRequestDTO {
     private String name;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }

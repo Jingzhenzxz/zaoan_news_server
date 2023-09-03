@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.service.impl;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicCardDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDetailDTO;
+import com.wuan.wuan_news.wuan_news_server.exception.TopicException;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsTopicMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.TopicMapper;
@@ -46,7 +47,12 @@ public class TopicServiceImpl implements TopicService {
     public TopicDTO createTopicAndAssociateNews(String topicName) {
         Topic topic = new Topic();
         topic.setName(topicName);
-        topic = topicMapper.createTopic(topic);
+        int createdCount = topicMapper.createTopic(topic);
+        if (createdCount != 1) {
+            throw new TopicException("创建主题失败");
+        } else {
+            topic = topicMapper.getTopicByName(topicName);
+        }
 
         List<News> matchingNews = newsMapper.getNewsByTitleContaining(topicName);
 
@@ -57,7 +63,7 @@ public class TopicServiceImpl implements TopicService {
             newsTopicMapper.create(newsTopic);
         }
 
-        return topicUtil.convertTopicModelToTopicDTO(topic);  // Assuming a constructor in TopicDTO that accepts a Topic entity.
+        return topicUtil.convertTopicModelToTopicDTO(topic);
     }
 
     @Override
@@ -79,6 +85,7 @@ public class TopicServiceImpl implements TopicService {
         }).collect(Collectors.toList());
     }
 
+    // 获取指定主题的主题卡片
     @Override
     public TopicCardDTO getTopicCardByTopicName(String topicName) {
         Topic topic = topicMapper.getTopicByName(topicName);

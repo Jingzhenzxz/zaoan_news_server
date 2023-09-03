@@ -50,22 +50,26 @@ public class TopicController {
     }
 
     // 获取所有话题卡片
-    @ApiOperation(value = "Get all topics")
+    @ApiOperation(value = "Get all topic cards")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved topics list"),
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @GetMapping("/cards")
-    public ResponseEntity<TopicCardResponseDTO> getAllTopics(Principal principal) {
+    public ResponseEntity<TopicCardResponseDTO> getAllTopicCards(Principal principal) {
         if (principal == null) {
             throw new UnauthorizedException("User is not authenticated");
         }
 
         List<TopicCardDTO> topicCardDTOList = topicService.getAllTopicCards();
+
+        if (topicCardDTOList == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         return ResponseEntity.ok(new TopicCardResponseDTO(topicCardDTOList));
     }
 
-    // 获取单个话题卡片
+    // 获取单个话题下的所有话题卡片
     @ApiOperation(value = "Get a single topic card by topic name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Topic card fetched successfully"),

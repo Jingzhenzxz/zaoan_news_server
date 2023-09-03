@@ -21,9 +21,6 @@ public class TopicResponseDTO {
         this.updatedAt = topicDTO.getUpdatedAt();
     }
 
-    public TopicResponseDTO(List<TopicDTO> listOfTopicDTO) {
-
-    }
     private String name;
 
     private LocalDateTime createdAt;

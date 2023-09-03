@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Mapper
 public interface TopicMapper {
-    Topic createTopic(Topic topic);
+    int createTopic(Topic topic);
 
     Topic getTopicByName(String topicName);
 

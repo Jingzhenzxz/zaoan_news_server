@@ -21,7 +21,6 @@ import javax.validation.Valid;
  * @date 2023/07/30/ 12:58
  * @description
  */
-
 @Api(tags = "Authentication Endpoints", value = "Endpoints for user registration and login")
 @RestController
 @RequestMapping("/api/authentication")

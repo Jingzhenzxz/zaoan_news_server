@@ -68,4 +68,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleNewsCreationException(NewsCreationException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
+
+    @ExceptionHandler(UserTopicCreationFailedException.class)
+    public ResponseEntity<String> handleUserTopicCreationFailedException(UserTopicCreationFailedException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserTopicDeleteFailedException.class)
+    public ResponseEntity<String> handleUserTopicDeleteFailedException(UserTopicDeleteFailedException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserAttributeException.class)
+    public ResponseEntity<String> handleUserAttributeException(UserAttributeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RssUrlIsInvalidException.class)
+    public ResponseEntity<String> handleRssUrlIsInvalidException(RssUrlIsInvalidException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 }

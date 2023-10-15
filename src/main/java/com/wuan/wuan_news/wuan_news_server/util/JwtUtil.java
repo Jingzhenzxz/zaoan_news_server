@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -32,7 +33,7 @@ public class JwtUtil {
          * 从配置的密钥字符串生成一个 SecretKey 对象，用于签名和验证 JWT。
          * 这个 SecretKey 对象是对称的，即同一个密钥既用于签名JWT也用于验证 JWT。
          */
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(UserDTO userDTO) {

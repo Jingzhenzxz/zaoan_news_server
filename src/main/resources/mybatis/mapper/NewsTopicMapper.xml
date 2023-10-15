@@ -18,7 +18,7 @@
     </resultMap>
 
     <!-- Fetch News by Topic ID -->
-    <select id="getNewsByTopicId" resultMap="NewsResultMap" parameterType="long">
+    <select id="getNewsByTopicId" resultMap="NewsResultMap">
         SELECT
         n.*
         FROM news n

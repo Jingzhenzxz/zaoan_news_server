@@ -1,5 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.config;
 
+import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
+import com.wuan.wuan_news.wuan_news_server.service.UserService;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +28,12 @@ import java.io.IOException;
 public class JwtFilter extends GenericFilterBean {
     private static final String AUTH_TOKEN_KEY = "Authorization";
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @Autowired
-    public JwtFilter(JwtUtil jwtUtil) {
+    public JwtFilter(JwtUtil jwtUtil, UserService userService) {
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
     @Override
@@ -49,7 +53,6 @@ public class JwtFilter extends GenericFilterBean {
         if (authToken != null && jwtUtil.validateToken(authToken)) {
             // 从 JWT 中获取用户信息
             String email = jwtUtil.getEmailFromJwt(authToken);
-            String username = jwtUtil.getUsernameFromJwt(authToken);
 
             // 创建一个认证令牌（Authentication Token），并将其设置到 Spring Security 的上下文中
             UsernamePasswordAuthenticationToken authenticationToken =

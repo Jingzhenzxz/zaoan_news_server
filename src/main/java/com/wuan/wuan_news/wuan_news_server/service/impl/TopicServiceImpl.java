@@ -4,9 +4,12 @@ import com.wuan.wuan_news.wuan_news_server.dto.TopicCardDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDetailDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.TopicException;
+import com.wuan.wuan_news.wuan_news_server.exception.UserCreationFailedException;
+import com.wuan.wuan_news.wuan_news_server.exception.UserTopicDeleteFailedException;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.NewsTopicMapper;
 import com.wuan.wuan_news.wuan_news_server.mapper.TopicMapper;
+import com.wuan.wuan_news.wuan_news_server.mapper.UserTopicMapper;
 import com.wuan.wuan_news.wuan_news_server.model.News;
 import com.wuan.wuan_news.wuan_news_server.model.NewsTopic;
 import com.wuan.wuan_news.wuan_news_server.model.Topic;
@@ -33,13 +36,16 @@ public class TopicServiceImpl implements TopicService {
     private final NewsMapper newsMapper;
     private final NewsTopicMapper newsTopicMapper;
     private final TopicUtil topicUtil;
+    private final UserTopicMapper userTopicMapper;
 
     @Autowired
-    public TopicServiceImpl(TopicMapper topicMapper, NewsMapper newsMapper, NewsTopicMapper newsTopicMapper, TopicUtil topicUtil) {
+    public TopicServiceImpl(TopicMapper topicMapper, NewsMapper newsMapper, NewsTopicMapper newsTopicMapper,
+                            TopicUtil topicUtil, UserTopicMapper userTopicMapper) {
         this.topicMapper = topicMapper;
         this.newsMapper = newsMapper;
         this.newsTopicMapper = newsTopicMapper;
         this.topicUtil = topicUtil;
+        this.userTopicMapper = userTopicMapper;
     }
 
     @Override
@@ -105,6 +111,28 @@ public class TopicServiceImpl implements TopicService {
                 .count();
 
         return new TopicCardDTO(topic.getName(), newsForTopic, newContentTodayCount);
+    }
+
+    @Override
+    public void followTopic(Long userId, Long topicId) {
+        int number = userTopicMapper.insertUserTopic(userId, topicId);
+        if (number == 0) {
+            throw new UserCreationFailedException("创建 user_topic 数据失败");
+        }
+    }
+
+    @Override
+    public void unfollowTopic(Long userId, Long topicId) {
+        int number = userTopicMapper.deleteUserTopic(userId, topicId);
+        if (number == 0) {
+            throw new UserTopicDeleteFailedException("删除 user_topic 数据失败");
+        }
+    }
+
+    @Override
+    public boolean isFollowing(Long userId, Long topicId) {
+        List<Long> topicIds = userTopicMapper.getTopicIdsByUserId(userId);
+        return topicIds.contains(topicId);
     }
 
     @Override

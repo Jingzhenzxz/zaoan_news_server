@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.service.impl;
 import com.wuan.wuan_news.wuan_news_server.dto.RegisterRequest;
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.*;
+import com.wuan.wuan_news.wuan_news_server.model.User;
 import com.wuan.wuan_news.wuan_news_server.service.AuthenticationService;
 import com.wuan.wuan_news.wuan_news_server.service.UserService;
 import com.wuan.wuan_news.wuan_news_server.util.JwtUtil;
@@ -31,12 +32,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserDTO login(String email, String password) {
         UserDTO userDTO = userService.findByEmail(email);
-
         if (userDTO == null) {
             throw new UserNotFoundException("没有找到 " + email + " 对应的用户");
         }
 
-        boolean passwordMatch = PasswordUtil.verifyPassword(password, userDTO.getPassword());
+        String hashedPassword = userService.getPasswordByEmail(email);
+        boolean passwordMatch = PasswordUtil.verifyPassword(password, hashedPassword);
         if (!passwordMatch) {
             throw new InvalidPasswordException("输入的密码有误");
         }
@@ -57,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         // 创建新用户
-        UserDTO newUser = new UserDTO();
+        User newUser = new User();
         newUser.setUsername(registerRequest.getUsername());
         newUser.setEmail(registerRequest.getEmail());
         newUser.setPassword(PasswordUtil.encode(registerRequest.getPassword()));
@@ -69,6 +70,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         // 返回新创建的用户
-        return newUser;
+        return userDTO;
     }
 }

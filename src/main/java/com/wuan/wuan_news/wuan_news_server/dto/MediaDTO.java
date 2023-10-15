@@ -16,11 +16,8 @@ import java.time.LocalDateTime;
 public class MediaDTO {
     @NotEmpty(message = "媒体名称不能为空")
     private String name;
-
     @NotEmpty(message = "RSS 地址不能为空")
     private String rssLink;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 }

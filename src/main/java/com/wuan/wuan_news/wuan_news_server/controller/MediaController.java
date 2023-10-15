@@ -2,7 +2,6 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 
 import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.MediaRequestDTO;
-import com.wuan.wuan_news.wuan_news_server.dto.MediaResponseDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
 import io.swagger.annotations.*;
@@ -40,7 +39,7 @@ public class MediaController {
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @PostMapping
-    public ResponseEntity<MediaResponseDTO> createMedia(
+    public ResponseEntity<MediaDTO> createMedia(
             @ApiParam(value = "Media creation request object", required = true)
             @Valid @RequestBody MediaRequestDTO mediaRequestDTO,
             Principal principal) {
@@ -49,7 +48,7 @@ public class MediaController {
         }
 
         MediaDTO createdMediaDTO = mediaService.createMedia(mediaRequestDTO.getName(), mediaRequestDTO.getRssLink());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new MediaResponseDTO(createdMediaDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMediaDTO);
     }
 
     @ApiOperation(value = "Delete media by media name")
@@ -66,7 +65,7 @@ public class MediaController {
             throw new UnauthorizedException("User is not authenticated");
         }
 
-        MediaDTO deletedMediaDTO = mediaService.deleteMediaByMediaName(mediaName);
+        mediaService.deleteMediaByMediaName(mediaName);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

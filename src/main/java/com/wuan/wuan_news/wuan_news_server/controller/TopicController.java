@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 import com.wuan.wuan_news.wuan_news_server.dto.*;
 import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.service.TopicService;
+import com.wuan.wuan_news.wuan_news_server.service.UserService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,11 @@ import java.util.List;
 @RequestMapping("/api/topic")
 public class TopicController {
     private final TopicService topicService;
+    private final UserService userService;
 
-    public TopicController(TopicService topicService) {
+    public TopicController(TopicService topicService, UserService userService) {
         this.topicService = topicService;
+        this.userService = userService;
     }
 
     // 创建话题
@@ -69,7 +72,7 @@ public class TopicController {
         return ResponseEntity.ok(new TopicCardResponseDTO(topicCardDTOList));
     }
 
-    // 获取单个话题下的所有话题卡片
+    // 根据话题名称获取单个话题卡片
     @ApiOperation(value = "Get a single topic card by topic name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Topic card fetched successfully"),
@@ -109,5 +112,49 @@ public class TopicController {
         }
 
         return ResponseEntity.ok(topicDetail);
+    }
+
+    @ApiOperation(value = "Follow a specific topic by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Topic followed successfully"),
+            @ApiResponse(code = 400, message = "Bad Request, invalid input data"),
+            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated"),
+            @ApiResponse(code = 404, message = "Not Found, topic not found")
+    })
+    @PostMapping("/follow")
+    public ResponseEntity<?> followTopic(
+            @ApiParam(value = "Data needed to follow a topic", required = true)
+            @RequestBody FollowRequestDTO request,
+            Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+        }
+
+        String email = principal.getName();
+        Long userId = userService.getUserIdByEmail(email);
+        topicService.followTopic(userId, request.getTopicId());
+        return ResponseEntity.ok("Followed successfully");
+    }
+
+    @ApiOperation(value = "Unfollow a specific topic by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Topic unfollowed successfully"),
+            @ApiResponse(code = 400, message = "Bad Request, invalid input data"),
+            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated"),
+            @ApiResponse(code = 404, message = "Not Found, topic not found")
+    })
+    @PostMapping("/unfollow")
+    public ResponseEntity<?> unfollowTopic(
+            @ApiParam(value = "Data needed to unfollow a topic", required = true)
+            @RequestBody FollowRequestDTO request,
+            Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+        }
+
+        String email = principal.getName();
+        Long userId = userService.getUserIdByEmail(email);
+        topicService.unfollowTopic(userId, request.getTopicId());
+        return ResponseEntity.ok("Unfollowed successfully");
     }
 }

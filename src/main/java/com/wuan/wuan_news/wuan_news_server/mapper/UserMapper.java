@@ -1,6 +1,5 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
 import com.wuan.wuan_news.wuan_news_server.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,8 +12,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserMapper {
-
     int insert(User newUser);
-
     User getUserByEmail(String email);
+    Long getUserIdByEmail(String email);
+    String getPasswordByEmail(String email);
+    String getPasswordByUserId(Long userId);
 }

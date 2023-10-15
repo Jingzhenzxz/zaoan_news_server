@@ -10,16 +10,24 @@
     </resultMap>
 
     <select id="getUserByEmail" resultMap="UserResultMap">
-        SELECT * FROM users WHERE email = #{email};
+        SELECT * FROM users WHERE email = #{email}
     </select>
 
-    <select id="getUserByUsername" resultMap="UserResultMap" parameterType="string">
-        SELECT * FROM users WHERE username = #{username};
+    <select id="getUserIdByEmail" resultType="java.lang.Long">
+        SELECT id FROM users WHERE email = #{email}
+    </select>
+
+    <select id="getPasswordByEmail" resultType="java.lang.String">
+        SELECT password FROM users WHERE email = #{email}
+    </select>
+
+    <select id="getPasswordByUserId" resultType="java.lang.String">
+        SELECT password FROM users WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.wuan.wuan_news.wuan_news_server.model.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (username, email, password)
-        VALUES (#{username}, #{email}, #{password});
+        VALUES (#{username}, #{email}, #{password})
     </insert>
 
     <update id="update" parameterType="com.wuan.wuan_news.wuan_news_server.model.User">
@@ -31,7 +39,7 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="delete" parameterType="int">
-        DELETE FROM users WHERE id = #{id};
+    <delete id="delete">
+        DELETE FROM users WHERE id = #{id}
     </delete>
 </mapper>

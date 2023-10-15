@@ -2,6 +2,7 @@ package com.wuan.wuan_news.wuan_news_server.util;
 
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -17,6 +18,7 @@ import java.security.SecureRandom;
 public class PasswordUtil {
 
     private static final int SALT_LENGTH = 16;
+    private static final SecureRandom random = new SecureRandom();  // 持久的随机对象
 
     public static String encode(String password) {
         String salt = generateSalt();
@@ -25,7 +27,6 @@ public class PasswordUtil {
     }
 
     private static String generateSalt() {
-        SecureRandom random = new SecureRandom();
         byte[] saltBytes = new byte[SALT_LENGTH];
         // 使用 SecureRandom 类生成一组随机字节
         random.nextBytes(saltBytes);
@@ -37,13 +38,25 @@ public class PasswordUtil {
         try {
             // 使用 SHA-256 算法进行哈希
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(password.getBytes());
+            md.update(password.getBytes(StandardCharsets.UTF_8));
             byte[] byteData = md.digest();
             // 然后将结果转化为十六进制字符串
             return bytesToHex(byteData);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /*
+     * 将字节数组转化为十六进制字符串。
+     * 因为字节的值范围是 0-255，直接输出为字符可能无法正常显示，转化为十六进制字符串可以方便地进行显示和存储。
+     */
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
     }
 
     public static boolean verifyPassword(String password, String hashedPassword) {
@@ -57,18 +70,6 @@ public class PasswordUtil {
          * 这个方法执行的时间是相同的。这个特性非常重要，因为它可以防止通过测量比较操作的时间来获取敏感信息（例如密码或哈希值）的攻击，
          * 这种攻击被称为"时间侧通道攻击"。
          */
-        return MessageDigest.isEqual(hashPassword(salt + password).getBytes(), hash.getBytes());
-    }
-
-    /*
-     * 将字节数组转化为十六进制字符串。
-     * 因为字节的值范围是 0-255，直接输出为字符可能无法正常显示，转化为十六进制字符串可以方便地进行显示和存储。
-     */
-    private static String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-        }
-        return sb.toString();
+        return MessageDigest.isEqual(hashPassword(salt + password).getBytes(StandardCharsets.UTF_8), hash.getBytes(StandardCharsets.UTF_8));
     }
 }

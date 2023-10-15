@@ -1,8 +1,11 @@
 package com.wuan.wuan_news.wuan_news_server.dto;
 
 import com.wuan.wuan_news.wuan_news_server.model.News;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,6 +18,7 @@ import java.util.List;
 @Data
 public class TopicCardDTO {
     private String topicName;
+    @Getter(AccessLevel.NONE) // 禁用 Lombok 自动生成的 getter
     private List<News> listOfNews;
     private long newContentTodayCount;
 
@@ -22,5 +26,10 @@ public class TopicCardDTO {
         this.topicName = topicName;
         this.listOfNews = listOfNews;
         this.newContentTodayCount = newContentTodayCount;
+    }
+
+    // 手动提供一个返回不可修改视图的 getter
+    public List<News> getListOfNews() {
+        return Collections.unmodifiableList(listOfNews);
     }
 }

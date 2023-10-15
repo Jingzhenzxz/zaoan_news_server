@@ -1,6 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
+import com.wuan.wuan_news.wuan_news_server.model.User;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +11,9 @@ import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
  * @description
  */
 public interface UserService {
-    UserDTO createNewUser(UserDTO newUser);
-
+    UserDTO createNewUser(User newUser);
     UserDTO findByEmail(String email);
+    Long getUserIdByEmail(String email);
+    String getPasswordByEmail(String email);
+    String getPasswordByUserId(Long userId);
 }

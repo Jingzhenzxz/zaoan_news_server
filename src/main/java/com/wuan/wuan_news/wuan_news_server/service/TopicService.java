@@ -18,4 +18,7 @@ public interface TopicService {
     TopicDetailDTO getTopicDetailByName(String topicName);
     List<TopicCardDTO> getAllTopicCards();
     TopicCardDTO getTopicCardByTopicName(String topicName);
+    void followTopic(Long userId, Long topicId);
+    void unfollowTopic(Long userId, Long topicId);
+    boolean isFollowing(Long userId, Long topicId);
 }

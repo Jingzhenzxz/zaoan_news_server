@@ -1,7 +1,9 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
 import com.wuan.wuan_news.wuan_news_server.dto.UserDTO;
+import com.wuan.wuan_news.wuan_news_server.exception.UserAttributeException;
 import com.wuan.wuan_news.wuan_news_server.exception.UserCreationFailedException;
+import com.wuan.wuan_news.wuan_news_server.exception.UserNotFoundException;
 import com.wuan.wuan_news.wuan_news_server.mapper.UserMapper;
 import com.wuan.wuan_news.wuan_news_server.model.User;
 import com.wuan.wuan_news.wuan_news_server.service.UserService;
@@ -27,21 +29,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createNewUser(UserDTO newUser) {
-        int result = userMapper.insert(userUtil.convertUserDTOToUserModel(newUser));
+    public UserDTO createNewUser(User newUser) {
+        int result = userMapper.insert(newUser);
         if (result == 0) {
             throw new UserCreationFailedException("创建新用户失败");
         } else {
-            return newUser;
+            return userUtil.convertUserModelToUserDTO(newUser);
         }
     }
 
     @Override
     public UserDTO findByEmail(String email) {
         User user = userMapper.getUserByEmail(email);
-        // if (user == null) {
-        //     throw new UserNotFoundException("没有找到该 Email 对应的用户");
-        // }
+        if (user == null) {
+            throw new UserNotFoundException("没有找到该 Email 对应的用户");
+        }
         return userUtil.convertUserModelToUserDTO(user);
+    }
+
+    @Override
+    public Long getUserIdByEmail(String email) {
+        Long userId = userMapper.getUserIdByEmail(email);
+        if (userId == null) {
+            throw  new UserNotFoundException("找不到该 Email 对应的用户");
+        }
+        return userId;
+    }
+
+    @Override
+    public String getPasswordByEmail(String email) {
+        String password = userMapper.getPasswordByEmail(email);
+        if (password == null) {
+            throw new UserAttributeException("用户的密码不存在");
+        }
+        return password;
+    }
+
+    @Override
+    public String getPasswordByUserId(Long userId) {
+        String password = userMapper.getPasswordByUserId(userId);
+        if (password == null) {
+            throw new UserAttributeException("用户的密码不存在");
+        }
+        return password;
     }
 }

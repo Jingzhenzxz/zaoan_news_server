@@ -3,6 +3,7 @@ package com.wuan.wuan_news.wuan_news_server.service;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicCardDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.TopicDetailDTO;
+import com.wuan.wuan_news.wuan_news_server.model.Topic;
 
 import java.util.List;
 
@@ -21,4 +22,5 @@ public interface TopicService {
     void followTopic(Long userId, Long topicId);
     void unfollowTopic(Long userId, Long topicId);
     boolean isFollowing(Long userId, Long topicId);
+    List<TopicCardDTO> getFollowedTopicsByUserId(Long userId);
 }

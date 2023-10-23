@@ -15,4 +15,5 @@ import lombok.Data;
 public class RegisterResponse {
     private String username;
     private String email;
+    private String errorMessage;
 }

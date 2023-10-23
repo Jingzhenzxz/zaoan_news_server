@@ -2,7 +2,6 @@ package com.wuan.wuan_news.wuan_news_server.controller;
 
 import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
 import com.wuan.wuan_news.wuan_news_server.dto.NewsResponseDTO;
-import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
 import com.wuan.wuan_news.wuan_news_server.service.NewsService;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,11 +37,7 @@ public class NewsController {
             @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
     })
     @GetMapping
-    public ResponseEntity<NewsResponseDTO> getAllNews(Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedException("User is not authenticated");
-        }
-
+    public ResponseEntity<NewsResponseDTO> getAllNews() {
         List<NewsDTO> newsDTOList = newsService.getAllNews();
         return ResponseEntity.ok(new NewsResponseDTO(newsDTOList));
     }
@@ -57,11 +51,7 @@ public class NewsController {
     @GetMapping("/{mediaName}")
     public ResponseEntity<NewsResponseDTO> getNewsByMediaName(
             @ApiParam(value = "Media name to retrieve news for", required = true)
-            @PathVariable String mediaName, Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedException("User is not authenticated");
-        }
-
+            @PathVariable String mediaName) {
         List<NewsDTO> newsDTOList = newsService.getNewsByMediaName(mediaName);
         return ResponseEntity.ok(new NewsResponseDTO(newsDTOList));
     }
@@ -77,12 +67,7 @@ public class NewsController {
             @ApiParam(value = "Media name of the news", required = true)
             @PathVariable String mediaName,
             @ApiParam(value = "Title of the news", required = true)
-            @PathVariable String newsTitle,
-            Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedException("User is not authenticated");
-        }
-
+            @PathVariable String newsTitle) {
         NewsDTO newsDTO = newsService.getNewsByMediaNameAndNewsTitle(mediaName, newsTitle);
         return ResponseEntity.ok(new NewsResponseDTO(Collections.singletonList(newsDTO)));
     }

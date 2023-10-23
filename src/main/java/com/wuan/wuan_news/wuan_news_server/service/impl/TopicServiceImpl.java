@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,6 +134,29 @@ public class TopicServiceImpl implements TopicService {
     public boolean isFollowing(Long userId, Long topicId) {
         List<Long> topicIds = userTopicMapper.getTopicIdsByUserId(userId);
         return topicIds.contains(topicId);
+    }
+
+    @Override
+    public List<TopicCardDTO> getFollowedTopicsByUserId(Long userId) {
+        List<Long> topicIds = userTopicMapper.getTopicIdsByUserId(userId);
+        List<Topic> topics = new LinkedList<>();
+        for (Long topicId : topicIds) {
+            Topic topic = topicMapper.getTopicByTopicId(topicId);
+            topics.add(topic);
+        }
+        return topics.stream().map(topic -> {
+            List<News> newsForTopic = newsTopicMapper.getNewsByTopicId(topic.getId())
+                    .stream()
+                    .sorted((n1, n2) -> n2.getPubDate().compareTo(n1.getPubDate()))
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            long newContentTodayCount = newsForTopic.stream()
+                    .filter(news -> news.getCreatedAt().toLocalDate().equals(LocalDate.now()))
+                    .count();
+
+            return new TopicCardDTO(topic.getName(), newsForTopic, newContentTodayCount);
+        }).collect(Collectors.toList());
     }
 
     @Override

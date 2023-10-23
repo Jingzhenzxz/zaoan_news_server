@@ -49,6 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Allow API docs
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
+                // Allow /api/news and its subpaths
+                .antMatchers("/api/news/**").permitAll()
+
+                .antMatchers("/api/topic/cards").permitAll()
+                .antMatchers("/api/topic/cards/{topicName}").permitAll()
+                .antMatchers("/api/topic/{topicName}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 在 UsernamePasswordAuthenticationFilter 过滤器之前添加 JwtFilter 过滤器

@@ -7,10 +7,13 @@ import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
 import com.wuan.wuan_news.wuan_news_server.exception.RssUrlIsInvalidException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +29,7 @@ import java.util.List;
  * @description
  */
 @Service
+@Slf4j
 public class RssUtil {
     public boolean isValidRssUrl(String rssUrl) {
         try {
@@ -35,14 +39,13 @@ public class RssUtil {
             try (InputStream is = feedUrl.openConnection().getInputStream()) {
                 input.build(new XmlReader(is));
             }
-
             // If no exception is thrown, then the URL is a valid RSS feed
             return true;
         } catch (MalformedURLException e) {
-            System.out.println("The provided string is not a valid URL");
+            log.error("The provided string is not a valid URL" + e);
             return false;
         } catch (IOException | IllegalArgumentException | FeedException e) {
-            System.out.println("The URL could not be read or the feed could not be parsed");
+            log.error("" + e);
             return false;
         }
     }
@@ -50,45 +53,60 @@ public class RssUtil {
     public List<NewsDTO> fetchFromRssUrl(String rssUrl) {
         List<NewsDTO> newsList = new ArrayList<>();
         try {
-            URL feedUrl = new URL(rssUrl);
-            HttpURLConnection httpcon = (HttpURLConnection) feedUrl.openConnection();
+            HttpURLConnection httpcon = openHttpConnection(rssUrl);
 
-            // Check the response code and only process if the request was successful (HTTP 200)
-            if (httpcon.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                // 下面的代码有待修改，应该检查返回的内容是以“<? xml”开头还是以“<? DOCTYPE”开头
-                // Check if the Content-Type is what we expect (RSS/Atom)
-                String contentType = httpcon.getContentType();
-                if (contentType != null && (contentType.contains("application/rss+xml") || contentType.contains("application/atom+xml"))) {
-                    try (InputStream is = httpcon.getInputStream()) {
-                        SyndFeedInput input = new SyndFeedInput();
-                        SyndFeed feed = input.build(new XmlReader(is));
-
-                        for (SyndEntry entry : feed.getEntries()) {
-                            NewsDTO newsDTO = new NewsDTO();
-                            newsDTO.setTitle(entry.getTitle());
-                            newsDTO.setDescription(entry.getDescription().getValue());
-                            newsDTO.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
-                            newsDTO.setLink(entry.getLink());
-                            newsDTO.setAuthor(entry.getAuthor());
-                            newsList.add(newsDTO);
-                        }
-                    } catch (FeedException | IOException e) {
-                        // Handle issues related to feed parsing or I/O here
-                        e.printStackTrace();
-                    }
-                } else {
-                    // Log or handle the unexpected Content-Type
-                    throw new RssUrlIsInvalidException("Unexpected content type for URL: " + rssUrl + ". Content Type: " + contentType);
-                }
+            if (isValidRssContent(httpcon)) {
+                SyndFeed feed = fetchSyndFeed(httpcon);
+                populateNewsList(newsList, feed);
             } else {
-                // Log or handle the invalid response code (404 or other)
-                throw new RssUrlIsInvalidException("Failed to fetch RSS feed from URL: " + rssUrl + ". HTTP Error Code: " + httpcon.getResponseCode());
+                log.info("当前RSS URL返回的内容的格式不符合要求" + rssUrl);
+                // throw new RssUrlIsInvalidException("Unexpected content type for URL: " + rssUrl);
             }
-        } catch (IOException e) {
-            // Handle issues related to opening the connection (invalid URL, no internet, etc.)
+        } catch (IOException | FeedException e) {
             e.printStackTrace();
         }
-
         return newsList;
+    }
+
+    private HttpURLConnection openHttpConnection(String rssUrl) throws IOException {
+        URL feedUrl = new URL(rssUrl);
+        HttpURLConnection httpcon = (HttpURLConnection) feedUrl.openConnection();
+        if (httpcon.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new RssUrlIsInvalidException("Failed to fetch RSS feed from URL: " + rssUrl + ". HTTP Error Code: " + httpcon.getResponseCode());
+        }
+        return httpcon;
+    }
+
+    private boolean isValidRssContent(HttpURLConnection httpcon) throws IOException {
+        String firstLine;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(httpcon.getInputStream()))) {
+            firstLine = reader.readLine();
+        }
+
+        boolean startsWithXml = firstLine != null && firstLine.trim().startsWith("<?xml");
+        boolean startsWithDocType = firstLine != null && firstLine.trim().startsWith("<!DOCTYPE");
+        String contentType = httpcon.getContentType();
+
+        return (contentType.contains("application/rss+xml") || contentType.contains("application/atom+xml"))
+                && startsWithXml && !startsWithDocType;
+    }
+
+    private SyndFeed fetchSyndFeed(HttpURLConnection httpcon) throws IOException, FeedException {
+        try (InputStream is = httpcon.getInputStream()) {
+            SyndFeedInput input = new SyndFeedInput();
+            return input.build(new XmlReader(is));
+        }
+    }
+
+    private void populateNewsList(List<NewsDTO> newsList, SyndFeed feed) {
+        for (SyndEntry entry : feed.getEntries()) {
+            NewsDTO newsDTO = new NewsDTO();
+            newsDTO.setTitle(entry.getTitle());
+            newsDTO.setDescription(entry.getDescription().getValue());
+            newsDTO.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
+            newsDTO.setLink(entry.getLink());
+            newsDTO.setAuthor(entry.getAuthor());
+            newsList.add(newsDTO);
+        }
     }
 }

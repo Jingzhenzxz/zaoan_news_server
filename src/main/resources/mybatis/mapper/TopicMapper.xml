@@ -30,4 +30,8 @@
         FROM topic
     </select>
 
+    <select id="getTopicByTopicId" resultType="com.wuan.wuan_news.wuan_news_server.model.Topic">
+        SELECT * FROM topic WHERE topic_id = #{topicId}
+    </select>
+
 </mapper>

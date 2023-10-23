@@ -54,23 +54,24 @@ public class NewsFetchTask {
         // 遍历所有的media，从RSS源获取信息并保存
         for (MediaDTO mediaDTO : mediaDTOs) {
             List<NewsDTO> newsDTOsList = rssUtil.fetchFromRssUrl(mediaDTO.getRssLink());
+            if (newsDTOsList != null) {
+                for (NewsDTO newsDTO : newsDTOsList) {
+                    NewsDTO existingNews = newsUtil.convertNewsModelToNewsDTO(newsMapper.getNewsByMediaNameAndNewsTitle(mediaDTO.getName(), newsDTO.getTitle()));
 
-            for (NewsDTO newsDTO : newsDTOsList) {
-                NewsDTO existingNews = newsUtil.convertNewsModelToNewsDTO(newsMapper.getNewsByMediaNameAndNewsTitle(mediaDTO.getName(), newsDTO.getTitle()));
+                    if (existingNews == null) {
+                        newsDTO.setMediaName(mediaDTO.getName());
 
-                if (existingNews == null) {
-                    newsDTO.setMediaName(mediaDTO.getName());
+                        int result = newsMapper.insertSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                        if (result == 0) {
+                            throw new NewsCreationException("保存资讯失败");
+                        }
+                    } else if (newsDTO.getPubDate().isAfter(existingNews.getPubDate())) {
+                        newsDTO.setMediaName(mediaDTO.getName());
 
-                    int result = newsMapper.insertSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
-                    if (result == 0) {
-                        throw new NewsCreationException("保存资讯失败");
-                    }
-                } else if (newsDTO.getPubDate().isAfter(existingNews.getPubDate())) {
-                    newsDTO.setMediaName(mediaDTO.getName());
-
-                    int result = newsMapper.updateSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
-                    if (result == 0) {
-                        throw new NewsUpdateException("更新资讯失败");
+                        int result = newsMapper.updateSelective(newsUtil.convertNewsDTOToNewsModel(newsDTO));
+                        if (result == 0) {
+                            throw new NewsUpdateException("更新资讯失败");
+                        }
                     }
                 }
             }

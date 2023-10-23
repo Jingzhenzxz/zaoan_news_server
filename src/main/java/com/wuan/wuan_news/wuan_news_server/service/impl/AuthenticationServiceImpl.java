@@ -47,15 +47,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserDTO register(RegisterRequest registerRequest) {
-        // 检查密码和确认密码是否相同
-        if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new PasswordMismatchException("Password and confirm password do not match");
-        }
-
-        // 检查邮箱是否已经存在
-        if (userService.findByEmail(registerRequest.getEmail()) != null) {
-            throw new UserEmailAlreadyExistsException("UserEmail already exists!");
-        }
+        // // 检查密码和确认密码是否相同
+        // if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
+        //     throw new PasswordMismatchException("Password and confirm password do not match");
+        // }
+        //
+        // // 检查邮箱是否已经存在
+        // if (userService.findByEmail(registerRequest.getEmail()) != null) {
+        //     throw new UserEmailAlreadyExistsException("UserEmail already exists!");
+        // }
 
         // 创建新用户
         User newUser = new User();

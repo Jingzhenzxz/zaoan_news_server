@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
                 // Allow /api/news and its subpaths
-                .antMatchers("/api/news/**").permitAll()
+                .antMatchers("/api/news**").permitAll()
 
                 .antMatchers("/api/topic/cards").permitAll()
                 .antMatchers("/api/topic/cards/{topicName}").permitAll()

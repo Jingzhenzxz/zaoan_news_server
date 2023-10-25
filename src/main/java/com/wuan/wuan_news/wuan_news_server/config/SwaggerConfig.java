@@ -50,9 +50,17 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.wuan.wuan_news.wuan_news_server.controller"))
-                // 排除登录和注册路径
-                .paths(input -> !"/wuan_news/api/authentication/login".equals(input) &&
-                        !"/wuan_news/api/authentication/register".equals(input))
+                // 排除不需要认证的路径
+                .paths(input -> {
+                    if (input.startsWith("/wuan_news/api/authentication/") ||
+                            input.startsWith("/wuan_news/api/news") ||
+                            "/wuan_news/api/topic/cards".equals(input) ||
+                            input.matches("/wuan_news/api/topic/cards/.+") ||
+                            input.matches("/wuan_news/api/topic/.+")) {
+                        return false;
+                    }
+                    return true;
+                })
                 .build()
                 // 设置安全方案
                 .securitySchemes(Collections.singletonList(apiKey()))
@@ -70,8 +78,12 @@ public class SwaggerConfig {
                 // 这里是使用token的路径配置
                 .operationSelector(operationContext -> {
                     String path = operationContext.requestMappingPattern();
-                    return !"/wuan_news/api/authentication/login".equals(path) &&
-                            !"/wuan_news/api/authentication/register".equals(path);
+                    return
+                            !path.startsWith("/wuan_news/api/authentication/") &&
+                            !path.startsWith("/wuan_news/api/news") &&
+                            !"/wuan_news/api/topic/cards".equals(path) &&
+                            !path.matches("/wuan_news/api/topic/cards/.+") &&
+                            !path.matches("/wuan_news/api/topic/.+");
                 })
                 .build();
     }
@@ -91,9 +103,13 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.wuan.wuan_news.wuan_news_server.controller"))
-                // 仅选择登录和注册路径
-                .paths(input -> "/wuan_news/api/authentication/login".equals(input) ||
-                        "/wuan_news/api/authentication/register".equals(input))
+                // 不需要认证的路径
+                .paths(input ->
+                        input.startsWith("/wuan_news/api/authentication/") ||
+                        input.startsWith("/wuan_news/api/news") ||
+                        "/wuan_news/api/topic/cards".equals(input) ||
+                        input.matches("/wuan_news/api/topic/cards/.+") ||  // Matches any subpath after /cards/
+                        input.matches("/wuan_news/api/topic/.+"))
                 .build();
     }
 }

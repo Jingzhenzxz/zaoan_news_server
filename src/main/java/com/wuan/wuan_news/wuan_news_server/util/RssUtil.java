@@ -50,24 +50,6 @@ public class RssUtil {
         }
     }
 
-    public List<NewsDTO> fetchFromRssUrl(String rssUrl) {
-        List<NewsDTO> newsList = new ArrayList<>();
-        try {
-            HttpURLConnection httpcon = openHttpConnection(rssUrl);
-
-            if (isValidRssContent(httpcon)) {
-                SyndFeed feed = fetchSyndFeed(httpcon);
-                populateNewsList(newsList, feed);
-            } else {
-                log.info("当前RSS URL返回的内容的格式不符合要求" + rssUrl);
-                // throw new RssUrlIsInvalidException("Unexpected content type for URL: " + rssUrl);
-            }
-        } catch (IOException | FeedException e) {
-            e.printStackTrace();
-        }
-        return newsList;
-    }
-
     private HttpURLConnection openHttpConnection(String rssUrl) throws IOException {
         URL feedUrl = new URL(rssUrl);
         HttpURLConnection httpcon = (HttpURLConnection) feedUrl.openConnection();
@@ -77,25 +59,40 @@ public class RssUtil {
         return httpcon;
     }
 
-    private boolean isValidRssContent(HttpURLConnection httpcon) throws IOException {
-        String firstLine;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(httpcon.getInputStream()))) {
-            firstLine = reader.readLine();
+    public List<NewsDTO> fetchFromRssUrl(String rssUrl) {
+        List<NewsDTO> newsList = new ArrayList<>();
+        try {
+            HttpURLConnection httpcon = openHttpConnection(rssUrl);
+
+            // 创建一次InputStream并用于后续操作
+            try (InputStream is = httpcon.getInputStream()) {
+                if (isValidRssContent(is)) {
+                    SyndFeed feed = fetchSyndFeed(is);
+                    populateNewsList(newsList, feed);
+                } else {
+                    log.info("当前RSS URL返回的内容的格式不符合要求：" + rssUrl);
+                }
+            }
+        } catch (IOException | FeedException e) {
+            e.printStackTrace();
         }
-
-        boolean startsWithXml = firstLine != null && firstLine.trim().startsWith("<?xml");
-        boolean startsWithDocType = firstLine != null && firstLine.trim().startsWith("<!DOCTYPE");
-        String contentType = httpcon.getContentType();
-
-        return (contentType.contains("application/rss+xml") || contentType.contains("application/atom+xml"))
-                && startsWithXml && !startsWithDocType;
+        return newsList;
     }
 
-    private SyndFeed fetchSyndFeed(HttpURLConnection httpcon) throws IOException, FeedException {
-        try (InputStream is = httpcon.getInputStream()) {
-            SyndFeedInput input = new SyndFeedInput();
-            return input.build(new XmlReader(is));
+    private boolean isValidRssContent(InputStream is) throws IOException {
+        String firstLine;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            firstLine = reader.readLine();
         }
+        boolean startsWithXml = firstLine != null && firstLine.trim().startsWith("<?xml");
+        boolean startsWithDocType = firstLine != null && firstLine.trim().startsWith("<!DOCTYPE");
+
+        return startsWithXml && !startsWithDocType;
+    }
+
+    private SyndFeed fetchSyndFeed(InputStream is) throws IOException, FeedException {
+        SyndFeedInput input = new SyndFeedInput();
+        return input.build(new XmlReader(is));
     }
 
     private void populateNewsList(List<NewsDTO> newsList, SyndFeed feed) {

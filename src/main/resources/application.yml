@@ -9,12 +9,8 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/wuan_news?useSSL=false&serverTimezone=UTC%2B8&useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: 1234
+    password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
-    schema:
-      - classpath:database.sql
-      - classpath:schema.sql
 
 mybatis:
   type-aliases-package: com.wuan.wuan_news.wuan_news_server.model

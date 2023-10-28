@@ -10,10 +10,7 @@ import com.wuan.wuan_news.wuan_news_server.exception.RssUrlIsInvalidException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,9 +62,23 @@ public class RssUtil {
             HttpURLConnection httpcon = openHttpConnection(rssUrl);
 
             // 创建一次InputStream并用于后续操作
-            try (InputStream is = httpcon.getInputStream()) {
-                if (isValidRssContent(is)) {
-                    SyndFeed feed = fetchSyndFeed(is);
+            try (InputStream is = httpcon.getInputStream();
+                 BufferedInputStream bis = new BufferedInputStream(is);
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = bis.read(buffer)) != -1) {
+                    baos.write(buffer, 0, bytesRead);
+                }
+
+                byte[] data = baos.toByteArray();
+                ByteArrayInputStream bais1 = new ByteArrayInputStream(data);
+                ByteArrayInputStream bais2 = new ByteArrayInputStream(data);
+
+                if (isValidRssContent(bais1)) {
+                    // bais1 流会被 isValidRssContent 关闭，所以我们把 bais2 流传给 fetchSyndFeed
+                    SyndFeed feed = fetchSyndFeed(bais2);
                     populateNewsList(newsList, feed);
                 } else {
                     log.info("当前RSS URL返回的内容的格式不符合要求：" + rssUrl);
@@ -79,8 +90,10 @@ public class RssUtil {
         return newsList;
     }
 
+
     private boolean isValidRssContent(InputStream is) throws IOException {
         String firstLine;
+        // 读取输入流的第一行并关闭流（由于BufferedReader的自动关闭特性）
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             firstLine = reader.readLine();
         }

@@ -11,5 +11,5 @@ import lombok.Data;
  */
 @Data
 public class FollowRequestDTO {
-    private Long topicId;
+    private String topicName;
 }

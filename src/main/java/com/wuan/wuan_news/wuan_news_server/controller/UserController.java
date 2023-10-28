@@ -46,13 +46,13 @@ public class UserController {
 
         String email = principal.getName();
         Long userId = userService.getUserIdByEmail(email);
-        List<TopicCardDTO> topics = topicService.getFollowedTopicsByUserId(userId);
+        List<String> topicNames = topicService.getFollowedTopicNamesByUserId(userId);
 
-        if (topics == null || topics.isEmpty()) {
+        if (topicNames == null || topicNames.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No topics found for the user");
         }
 
-        return ResponseEntity.ok(topics);
+        return ResponseEntity.ok(topicNames);
     }
 
     @ApiOperation(value = "Follow a specific topic by ID")
@@ -73,7 +73,7 @@ public class UserController {
 
         String email = principal.getName();
         Long userId = userService.getUserIdByEmail(email);
-        topicService.followTopic(userId, request.getTopicId());
+        topicService.followTopic(userId, request.getTopicName());
         return ResponseEntity.ok("Followed successfully");
     }
 
@@ -95,7 +95,7 @@ public class UserController {
 
         String email = principal.getName();
         Long userId = userService.getUserIdByEmail(email);
-        topicService.unfollowTopic(userId, request.getTopicId());
+        topicService.unfollowTopic(userId, request.getTopicName());
         return ResponseEntity.ok("Unfollowed successfully");
     }
 }

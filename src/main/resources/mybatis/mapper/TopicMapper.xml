@@ -31,7 +31,15 @@
     </select>
 
     <select id="getTopicByTopicId" resultType="com.wuan.wuan_news.wuan_news_server.model.Topic">
-        SELECT * FROM topic WHERE topic_id = #{topicId}
+        SELECT * FROM topic WHERE id = #{topicId}
+    </select>
+
+    <select id="getTopicIdByName" resultType="java.lang.Long">
+        SELECT id FROM topic WHERE name = #{topicName}
+    </select>
+
+    <select id="getTopicNameByTopicId" resultType="java.lang.String">
+        SELECT name FROM topic WHERE id = #{topicId}
     </select>
 
 </mapper>

@@ -21,4 +21,8 @@ public interface TopicMapper {
     List<Topic> getAllTopics();
 
     Topic getTopicByTopicId(Long topicId);
+
+    Long getTopicIdByName(String topicName);
+
+    String getTopicNameByTopicId(Long topicId);
 }

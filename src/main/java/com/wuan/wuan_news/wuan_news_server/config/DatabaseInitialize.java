@@ -144,7 +144,7 @@ public class DatabaseInitialize {
         createDatabase();
         // 然后再次连接，执行脚本初始化库中的表格
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            runSQLScript("/create-table.sql", true, connection);
+            runSQLScript("/schema.sql", true, connection);
             log.info("初始化表格完成！");
         } catch (Exception e) {
             log.error("初始化表格时，连接数据库失败！");

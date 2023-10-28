@@ -73,7 +73,7 @@ public class AuthenticationController {
         }
 
         UserDTO userDTO = authenticationService.register(registerRequest);
-        RegisterResponse registerResponse = new RegisterResponse(userDTO.getUsername(), userDTO.getEmail(), "");
+        RegisterResponse registerResponse = new RegisterResponse(userDTO.getUsername(), userDTO.getEmail(), "创建成功！");
         return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
     }
 

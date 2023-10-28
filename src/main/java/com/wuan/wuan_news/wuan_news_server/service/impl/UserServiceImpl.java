@@ -42,7 +42,9 @@ public class UserServiceImpl implements UserService {
     public UserDTO findByEmail(String email) {
         User user = userMapper.getUserByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("没有找到该 Email 对应的用户");
+            /* 注意，这里不能抛出错误，因为在第一个用户注册的时候，我们会调用 findByEmail 方法检查该用户是否存在，此时肯定
+            是不不存在的，所以应该返回 null 而不是抛出异常。 */
+            return null;
         }
         return userUtil.convertUserModelToUserDTO(user);
     }

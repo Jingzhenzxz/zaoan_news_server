@@ -115,7 +115,8 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public void followTopic(Long userId, Long topicId) {
+    public void followTopic(Long userId, String topicName) {
+        Long topicId = topicMapper.getTopicIdByName(topicName);
         int number = userTopicMapper.insertUserTopic(userId, topicId);
         if (number == 0) {
             throw new UserCreationFailedException("创建 user_topic 数据失败");
@@ -123,7 +124,8 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public void unfollowTopic(Long userId, Long topicId) {
+    public void unfollowTopic(Long userId, String topicName) {
+        Long topicId = topicMapper.getTopicIdByName(topicName);
         int number = userTopicMapper.deleteUserTopic(userId, topicId);
         if (number == 0) {
             throw new UserTopicDeleteFailedException("删除 user_topic 数据失败");
@@ -157,6 +159,14 @@ public class TopicServiceImpl implements TopicService {
 
             return new TopicCardDTO(topic.getName(), newsForTopic, newContentTodayCount);
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getFollowedTopicNamesByUserId(Long userId) {
+        List<Long> topicIds = userTopicMapper.getTopicIdsByUserId(userId);
+        return topicIds.stream()
+                .map(topicMapper::getTopicNameByTopicId)
+                .collect(Collectors.toList());
     }
 
     @Override

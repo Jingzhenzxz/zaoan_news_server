@@ -5,8 +5,9 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
-import com.wuan.wuan_news.wuan_news_server.exception.RssUrlIsInvalidException;
+import com.wuan.wuan_news.wuan_news_server.common.ErrorCode;
+import com.wuan.wuan_news.wuan_news_server.exception.BusinessException;
+import com.wuan.wuan_news.wuan_news_server.model.entity.News;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -51,13 +52,13 @@ public class RssUtil {
         URL feedUrl = new URL(rssUrl);
         HttpURLConnection httpcon = (HttpURLConnection) feedUrl.openConnection();
         if (httpcon.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            throw new RssUrlIsInvalidException("Failed to fetch RSS feed from URL: " + rssUrl + ". HTTP Error Code: " + httpcon.getResponseCode());
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "获取RSS订阅失败: " + rssUrl + ". HTTP Error Code: " + httpcon.getResponseCode());
         }
         return httpcon;
     }
 
-    public List<NewsDTO> fetchFromRssUrl(String rssUrl) {
-        List<NewsDTO> newsList = new ArrayList<>();
+    public List<News> fetchFromRssUrl(String rssUrl) {
+        List<News> newsList = new ArrayList<>();
         try {
             HttpURLConnection httpcon = openHttpConnection(rssUrl);
 
@@ -81,11 +82,11 @@ public class RssUtil {
                     SyndFeed feed = fetchSyndFeed(bais2);
                     populateNewsList(newsList, feed);
                 } else {
-                    log.info("当前RSS URL返回的内容的格式不符合要求：" + rssUrl);
+                    log.info("当前RSS URL返回的内容的格式不符合要求：{}", rssUrl);
                 }
             }
         } catch (IOException | FeedException e) {
-            e.printStackTrace();
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, e.getMessage());
         }
         return newsList;
     }
@@ -108,15 +109,15 @@ public class RssUtil {
         return input.build(new XmlReader(is));
     }
 
-    private void populateNewsList(List<NewsDTO> newsList, SyndFeed feed) {
+    private void populateNewsList(List<News> newsList, SyndFeed feed) {
         for (SyndEntry entry : feed.getEntries()) {
-            NewsDTO newsDTO = new NewsDTO();
-            newsDTO.setTitle(entry.getTitle());
-            newsDTO.setDescription(entry.getDescription().getValue());
-            newsDTO.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
-            newsDTO.setLink(entry.getLink());
-            newsDTO.setAuthor(entry.getAuthor());
-            newsList.add(newsDTO);
+            News news = new News();
+            news.setTitle(entry.getTitle());
+            news.setDescription(entry.getDescription().getValue());
+            news.setPubDate(entry.getPublishedDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
+            news.setLink(entry.getLink());
+            news.setAuthor(entry.getAuthor());
+            newsList.add(news);
         }
     }
 }

@@ -1,9 +1,10 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
-import com.wuan.wuan_news.wuan_news_server.model.News;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.News;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -14,18 +15,5 @@ import java.util.List;
  * @description
  */
 @Mapper
-public interface NewsMapper {
-    List<News> getAllNews();
-
-    News getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
-
-    int insert(News news);
-    int insertSelective(News news);
-
-    int update(News news);
-    int updateSelective(News news);
-
-    List<News> getNewsByMediaName(String mediaName);
-
-    List<News> getNewsByTitleContaining(String topicName);
+public interface NewsMapper extends BaseMapper<News> {
 }

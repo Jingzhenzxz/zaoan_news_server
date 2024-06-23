@@ -1,5 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.UserTopic;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,9 +14,5 @@ import java.util.List;
  * @description
  */
 @Mapper
-public interface UserTopicMapper {
-    List<Long> getTopicIdsByUserId(Long userId);
-    List<Long> getUserIdsByTopicId(Long topicId);
-    int insertUserTopic(Long userId, Long topicId);
-    int deleteUserTopic(Long userId, Long topicId);
+public interface UserTopicMapper extends BaseMapper<UserTopic> {
 }

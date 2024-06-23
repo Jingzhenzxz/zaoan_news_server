@@ -1,8 +1,9 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
-import com.wuan.wuan_news.wuan_news_server.dto.NewsDTO;
-
-import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.wuan.wuan_news.wuan_news_server.model.dto.news.NewsQueryRequest;
+import com.wuan.wuan_news.wuan_news_server.model.entity.News;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,10 +12,6 @@ import java.util.List;
  * @date 2023/07/30/ 13:35
  * @description
  */
-public interface NewsService {
-    List<NewsDTO> getAllNews();
-
-    NewsDTO getNewsByMediaNameAndNewsTitle(String mediaName, String newsTitle);
-
-    List<NewsDTO> getNewsByMediaName(String mediaName);
+public interface NewsService extends IService<News> {
+    Wrapper<News> getQueryWrapper(NewsQueryRequest newsQueryRequest);
 }

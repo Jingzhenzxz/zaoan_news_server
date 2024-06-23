@@ -1,6 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.model.Topic;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.Topic;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -13,16 +14,5 @@ import java.util.List;
  * @description
  */
 @Mapper
-public interface TopicMapper {
-    int createTopic(Topic topic);
-
-    Topic getTopicByName(String topicName);
-
-    List<Topic> getAllTopics();
-
-    Topic getTopicByTopicId(Long topicId);
-
-    Long getTopicIdByName(String topicName);
-
-    String getTopicNameByTopicId(Long topicId);
+public interface TopicMapper extends BaseMapper<Topic> {
 }

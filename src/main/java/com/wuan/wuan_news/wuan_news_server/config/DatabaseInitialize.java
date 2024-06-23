@@ -27,6 +27,7 @@ import java.sql.Statement;
 
 /**
  * 用于第一次启动时，初始化数据库的配置类
+ * @author ZXZ
  */
 @Slf4j
 @Configuration
@@ -89,7 +90,7 @@ public class DatabaseInitialize {
             sqlFileStreamReader.close();
         } catch (Exception e) {
             log.error("读取文件或者执行脚本失败！");
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -144,11 +145,11 @@ public class DatabaseInitialize {
         createDatabase();
         // 然后再次连接，执行脚本初始化库中的表格
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            runSQLScript("/schema.sql", true, connection);
+            runSQLScript("/sql/schema.sql", true, connection);
             log.info("初始化表格完成！");
         } catch (Exception e) {
             log.error("初始化表格时，连接数据库失败！");
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

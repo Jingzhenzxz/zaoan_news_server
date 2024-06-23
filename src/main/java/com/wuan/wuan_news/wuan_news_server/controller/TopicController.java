@@ -1,16 +1,28 @@
 package com.wuan.wuan_news.wuan_news_server.controller;
 
-import com.wuan.wuan_news.wuan_news_server.dto.*;
-import com.wuan.wuan_news.wuan_news_server.exception.UnauthorizedException;
-import com.wuan.wuan_news.wuan_news_server.service.TopicService;
-import com.wuan.wuan_news.wuan_news_server.service.UserService;
-import io.swagger.annotations.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wuan.wuan_news.wuan_news_server.annotation.AuthCheck;
+import com.wuan.wuan_news.wuan_news_server.common.BaseResponse;
+import com.wuan.wuan_news.wuan_news_server.common.DeleteRequest;
+import com.wuan.wuan_news.wuan_news_server.common.ErrorCode;
+import com.wuan.wuan_news.wuan_news_server.common.ResultUtils;
+import com.wuan.wuan_news.wuan_news_server.constant.UserConstant;
+import com.wuan.wuan_news.wuan_news_server.exception.BusinessException;
+import com.wuan.wuan_news.wuan_news_server.exception.ThrowUtils;
+import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicAddRequest;
+import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicQueryRequest;
+import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicUpdateRequest;
+import com.wuan.wuan_news.wuan_news_server.model.entity.*;
+import com.wuan.wuan_news.wuan_news_server.service.*;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -20,93 +32,207 @@ import java.util.List;
  * @date 2023/09/02/ 9:54
  * @description
  */
-@Api(tags = "Topic Endpoints", value = "Endpoints for managing topic")
 @RestController
-@RequestMapping("/api/topic")
+@RequestMapping("/topic")
 public class TopicController {
     private final TopicService topicService;
     private final UserService userService;
+    private final NewsService newsService;
+    private final NewsTopicService newsTopicService;
+    private final UserTopicService userTopicService;
 
-    public TopicController(TopicService topicService, UserService userService) {
+    @Autowired
+    public TopicController(TopicService topicService, UserService userService, NewsService newsService, NewsTopicService newsTopicService, UserTopicService userTopicService) {
         this.topicService = topicService;
         this.userService = userService;
+        this.newsService = newsService;
+        this.newsTopicService = newsTopicService;
+        this.userTopicService = userTopicService;
     }
 
-    // 创建话题
-    @ApiOperation(value = "Create a new topic")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Topic created successfully"),
-            @ApiResponse(code = 400, message = "Bad Request, invalid input data"),
-            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
-    })
-    @PostMapping
-    public ResponseEntity<TopicResponseDTO> createTopic(
+    /**
+     * 创建话题
+     */
+    @PostMapping("/add")
+    @AuthCheck(mustRole = UserConstant.DEFAULT_ROLE)
+    public BaseResponse addTopic(
             @ApiParam(value = "Topic creation request object", required = true)
-            @Valid @RequestBody TopicRequestDTO topicRequestDTO,
-            Principal principal) {
-        if (principal == null) {
-            throw new UnauthorizedException("User is not authenticated");
-        }
+            @Valid @RequestBody TopicAddRequest topicAddRequest,
+            HttpServletRequest request) {
+        User user = userService.getLoginUser(request);
+        Topic topic = findTopicByName(topicAddRequest.getName());
 
-        TopicDTO createdTopicDTO = topicService.createTopicAndAssociateNews(topicRequestDTO.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TopicResponseDTO(createdTopicDTO));
+        if (topic == null) {
+            return createNewTopic(topicAddRequest, user);
+        } else {
+            return handleExistingTopic(topic, user);
+        }
     }
 
-    // 获取所有话题卡片
-    @ApiOperation(value = "Get all topic cards")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved topics list"),
-            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated")
-    })
-    @GetMapping("/cards")
-    public ResponseEntity<TopicCardResponseDTO> getAllTopicCards() {
-        List<TopicCardDTO> topicCardDTOList = topicService.getAllTopicCards();
-
-        if (topicCardDTOList == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok(new TopicCardResponseDTO(topicCardDTOList));
+    private Topic findTopicByName(String name) {
+        QueryWrapper<Topic> topicQueryWrapper = new QueryWrapper<>();
+        topicQueryWrapper.eq("name", name);
+        return topicService.getOne(topicQueryWrapper);
     }
 
-    // 根据话题名称获取单个话题卡片
-    @ApiOperation(value = "Get a single topic card by topic name")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Topic card fetched successfully"),
-            @ApiResponse(code = 400, message = "Bad Request, invalid input data"),
-            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated"),
-            @ApiResponse(code = 404, message = "Not Found, topic not found")
-    })
-    @GetMapping("/cards/{topicName}")
-    public ResponseEntity<TopicCardDTO> getSingleTopicCard(
-            @ApiParam(value = "Name of the topic to fetch the card for", required = true)
-            @PathVariable String topicName) {
-        TopicCardDTO topicCard = topicService.getTopicCardByTopicName(topicName);
+    private BaseResponse createNewTopic(TopicAddRequest topicAddRequest, User user) {
+        Topic newTopic = new Topic();
+        newTopic.setName(topicAddRequest.getName());
+        boolean saved = topicService.save(newTopic);
 
-        if (topicCard == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if (!saved) {
+            return ResultUtils.error(ErrorCode.OPERATION_ERROR, "话题保存失败");
         }
 
-        return ResponseEntity.ok(topicCard);
+        return associateTopicWithUserAndNews(newTopic, user, topicAddRequest);
     }
 
-    @ApiOperation(value = "Get details of a single topic by name")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Topic fetched successfully"),
-            @ApiResponse(code = 400, message = "Bad Request, invalid input data"),
-            @ApiResponse(code = 401, message = "Unauthorized, user not authenticated"),
-            @ApiResponse(code = 404, message = "Not Found, topic not found")
-    })
-    @GetMapping("/{topicName}")
-    public ResponseEntity<TopicDetailDTO> getTopicDetail(
-            @ApiParam(value = "Name of the topic to fetch the details for", required = true)
-            @PathVariable String topicName) {
-
-        TopicDetailDTO topicDetail = topicService.getTopicDetailByName(topicName);
-
-        if (topicDetail == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    private BaseResponse handleExistingTopic(Topic topic, User user) {
+        if (isUserAlreadyAssociatedWithTopic(topic, user)) {
+            return ResultUtils.error(ErrorCode.DATA_ALREADY_EXISTS, "用户已关联该话题");
         }
 
-        return ResponseEntity.ok(topicDetail);
+        UserTopic newUserTopic = new UserTopic();
+        newUserTopic.setTopicId(topic.getId());
+        newUserTopic.setUserId(user.getId());
+        boolean userTopicSaved = userTopicService.save(newUserTopic);
+
+        if (userTopicSaved) {
+            return ResultUtils.success("创建话题成功！");
+        } else {
+            return ResultUtils.error(ErrorCode.OPERATION_ERROR, "关联用户话题失败");
+        }
+    }
+
+    private boolean isUserAlreadyAssociatedWithTopic(Topic topic, User user) {
+        QueryWrapper<UserTopic> userTopicQueryWrapper = new QueryWrapper<>();
+        userTopicQueryWrapper.eq("topic_id", topic.getId()).eq("user_id", user.getId());
+        UserTopic userTopic = userTopicService.getOne(userTopicQueryWrapper);
+        return userTopic != null;
+    }
+
+    private BaseResponse associateTopicWithUserAndNews(Topic topic, User user, TopicAddRequest topicAddRequest) {
+        UserTopic userTopic = new UserTopic();
+        userTopic.setTopicId(topic.getId());
+        userTopic.setUserId(user.getId());
+        boolean userTopicSaved = userTopicService.save(userTopic);
+
+        if (!userTopicSaved) {
+            return ResultUtils.error(ErrorCode.OPERATION_ERROR, "用户话题关联失败");
+        }
+
+        if (!associateNewsWithTopic(topic, topicAddRequest)) {
+            return ResultUtils.error(ErrorCode.OPERATION_ERROR, "新闻话题关联失败");
+        }
+
+        return ResultUtils.success("创建话题成功！");
+    }
+
+    private boolean associateNewsWithTopic(Topic topic, TopicAddRequest topicAddRequest) {
+        QueryWrapper<News> newsQueryWrapper = new QueryWrapper<>();
+        newsQueryWrapper.like(StringUtils.isNotBlank(topicAddRequest.getName()), "title", topicAddRequest.getName());
+        List<News> newsList = newsService.list(newsQueryWrapper);
+        for (News news : newsList) {
+            NewsTopic newsTopic = new NewsTopic();
+            newsTopic.setNewsId(news.getId());
+            newsTopic.setTopicId(topic.getId());
+            if (!newsTopicService.save(newsTopic)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 删除话题
+     */
+    @PostMapping("/delete")
+    @AuthCheck(mustRole = UserConstant.DEFAULT_ROLE)
+    public BaseResponse deleteTopic(
+            @ApiParam(value = "Topic deletion request object", required = true)
+            @Valid @RequestBody DeleteRequest deleteRequest,
+            HttpServletRequest request) {
+        if (deleteRequest == null || deleteRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        long topicId = deleteRequest.getId();
+
+        // 判断是否存在
+        Topic oldTopic = topicService.getById(topicId);
+        ThrowUtils.throwIf(oldTopic == null, ErrorCode.NOT_FOUND_ERROR);
+
+        // 检查权限
+        User user = userService.getLoginUser(request);
+        long operatorId = user.getId();
+        QueryWrapper<UserTopic> userTopicQueryWrapper = new QueryWrapper<>();
+        userTopicQueryWrapper.eq("topic_id", topicId);
+        userTopicQueryWrapper.eq("user_id", operatorId);
+        UserTopic userTopic = userTopicService.getOne(userTopicQueryWrapper);
+        if (userTopic == null && !userService.isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+
+        // 执行删除操作，先删除topic，再删除newsTopic，再删除userTopic
+        boolean topicRemoved = topicService.removeById(topicId);
+        ThrowUtils.throwIf(!topicRemoved, ErrorCode.OPERATION_ERROR);
+        QueryWrapper<NewsTopic> newsTopicQueryWrapper = new QueryWrapper<>();
+        newsTopicQueryWrapper.eq("topic_id", topicId);
+        boolean newsTopicRemoved = newsTopicService.remove(newsTopicQueryWrapper);
+        ThrowUtils.throwIf(!newsTopicRemoved, ErrorCode.OPERATION_ERROR);
+        boolean userTopicRemoved = userTopicService.remove(userTopicQueryWrapper);
+        ThrowUtils.throwIf(!userTopicRemoved, ErrorCode.OPERATION_ERROR);
+
+        return ResultUtils.success(true);
+    }
+
+    @PostMapping("/update")
+    public BaseResponse updateTopic(
+            @ApiParam(value = "Topic deletion request object", required = true)
+            @Valid @RequestBody TopicUpdateRequest topicUpdateRequest,
+            HttpServletRequest request) {
+        if (topicUpdateRequest == null || topicUpdateRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getLoginUser(request);
+        Long operatorId = user.getId();
+        long topicId = topicUpdateRequest.getId();
+        // 判断是否存在
+        QueryWrapper<UserTopic> userTopicQueryWrapper = new QueryWrapper<>();
+        userTopicQueryWrapper.eq("topic_id", topicId);
+        userTopicQueryWrapper.eq("user_id", operatorId);
+        UserTopic userTopic = userTopicService.getOne(userTopicQueryWrapper);
+        ThrowUtils.throwIf(userTopic == null, ErrorCode.NOT_FOUND_ERROR);
+
+        // 仅本人或管理员可更新
+        Long userId = topicUpdateRequest.getUserId();
+        if (!userId.equals(operatorId) && !userService.isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        Topic topic = new Topic();
+        BeanUtils.copyProperties(topicUpdateRequest, topic);
+        boolean updated = topicService.updateById(topic);
+        ThrowUtils.throwIf(!updated, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(true);
+    }
+
+    @GetMapping("/get")
+    public BaseResponse getTopicById(@RequestBody Long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Topic topic = topicService.getById(id);
+        ThrowUtils.throwIf(topic == null, ErrorCode.NOT_FOUND_ERROR);
+        return ResultUtils.success(topic);
+    }
+
+    @PostMapping("/list/page")
+    public BaseResponse<Page<Topic>> listTopicByPage(@RequestBody TopicQueryRequest topicQueryRequest, HttpServletRequest request) {
+        long current = topicQueryRequest.getCurrent();
+        long size = topicQueryRequest.getPageSize();
+        Page<Topic> topicPage = topicService.page(new Page<>(current, size),
+                topicService.getQueryWrapper(topicQueryRequest));
+
+        return ResultUtils.success(topicPage);
     }
 }

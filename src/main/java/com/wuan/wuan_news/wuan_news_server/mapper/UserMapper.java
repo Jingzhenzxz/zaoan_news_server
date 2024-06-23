@@ -1,6 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.model.User;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,10 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @description
  */
 @Mapper
-public interface UserMapper {
-    int insert(User newUser);
-    User getUserByEmail(String email);
-    Long getUserIdByEmail(String email);
-    String getPasswordByEmail(String email);
-    String getPasswordByUserId(Long userId);
+public interface UserMapper extends BaseMapper<User> {
 }

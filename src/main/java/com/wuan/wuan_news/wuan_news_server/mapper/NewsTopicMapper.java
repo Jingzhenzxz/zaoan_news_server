@@ -1,11 +1,8 @@
 package com.wuan.wuan_news.wuan_news_server.mapper;
 
-import com.wuan.wuan_news.wuan_news_server.model.News;
-import com.wuan.wuan_news.wuan_news_server.model.NewsTopic;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.NewsTopic;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +12,5 @@ import java.util.List;
  * @description
  */
 @Mapper
-public interface NewsTopicMapper {
-    List<News> getNewsByTopicId(Long id);
-
-    void create(NewsTopic newsTopic);
+public interface NewsTopicMapper extends BaseMapper<NewsTopic> {
 }

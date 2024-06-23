@@ -1,11 +1,9 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
-import com.wuan.wuan_news.wuan_news_server.dto.TopicCardDTO;
-import com.wuan.wuan_news.wuan_news_server.dto.TopicDTO;
-import com.wuan.wuan_news.wuan_news_server.dto.TopicDetailDTO;
-import com.wuan.wuan_news.wuan_news_server.model.Topic;
-
-import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicQueryRequest;
+import com.wuan.wuan_news.wuan_news_server.model.entity.Topic;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,15 +12,6 @@ import java.util.List;
  * @date 2023/09/02/ 10:04
  * @description
  */
-public interface TopicService {
-    TopicDTO createTopicAndAssociateNews(String topicName);
-    TopicDetailDTO getTopicDetailByName(String topicName);
-    List<TopicCardDTO> getAllTopicCards();
-    TopicCardDTO getTopicCardByTopicName(String topicName);
-    void followTopic(Long userId, String topicName);
-    void unfollowTopic(Long userId, String topicName);
-    boolean isFollowing(Long userId, Long topicId);
-    List<TopicCardDTO> getFollowedTopicsByUserId(Long userId);
-
-    List<String> getFollowedTopicNamesByUserId(Long userId);
+public interface TopicService extends IService<Topic> {
+    Wrapper<Topic> getQueryWrapper(TopicQueryRequest topicQueryRequest);
 }

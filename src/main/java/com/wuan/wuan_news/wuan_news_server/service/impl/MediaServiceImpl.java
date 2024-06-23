@@ -1,18 +1,25 @@
 package com.wuan.wuan_news.wuan_news_server.service.impl;
 
-import com.wuan.wuan_news.wuan_news_server.dto.MediaDTO;
-import com.wuan.wuan_news.wuan_news_server.exception.InvalidRSSFormatException;
-import com.wuan.wuan_news.wuan_news_server.exception.MediaCreationException;
-import com.wuan.wuan_news.wuan_news_server.exception.MediaDeleteException;
-import com.wuan.wuan_news.wuan_news_server.exception.MediaNameAlreadyExists;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wuan.wuan_news.wuan_news_server.common.ErrorCode;
+import com.wuan.wuan_news.wuan_news_server.constant.CommonConstant;
+import com.wuan.wuan_news.wuan_news_server.exception.BusinessException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
-import com.wuan.wuan_news.wuan_news_server.model.Media;
+import com.wuan.wuan_news.wuan_news_server.mapper.UserMediaMapper;
+import com.wuan.wuan_news.wuan_news_server.model.dto.media.MediaQueryRequest;
+import com.wuan.wuan_news.wuan_news_server.model.entity.Media;
+import com.wuan.wuan_news.wuan_news_server.model.entity.UserMedia;
 import com.wuan.wuan_news.wuan_news_server.service.MediaService;
-import com.wuan.wuan_news.wuan_news_server.task.NewsFetchTask;
-import com.wuan.wuan_news.wuan_news_server.util.MediaUtil;
-import com.wuan.wuan_news.wuan_news_server.util.RssUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wuan.wuan_news.wuan_news_server.service.UserMediaService;
+import com.wuan.wuan_news.wuan_news_server.util.SqlUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,52 +29,38 @@ import org.springframework.stereotype.Service;
  * @description
  */
 @Service
-public class MediaServiceImpl implements MediaService {
-    private final MediaMapper mediaMapper;
-    private final RssUtil rssUtil;
-    private final MediaUtil mediaUtil;
-    private final NewsFetchTask newsFetchTask;
+public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements MediaService {
+    private final UserMediaService userMediaService;
 
-    @Autowired
-    public MediaServiceImpl(MediaMapper mediaMapper, RssUtil rssUtil, MediaUtil mediaUtil, NewsFetchTask newsFetchTask) {
-        this.mediaMapper = mediaMapper;
-        this.rssUtil = rssUtil;
-        this.mediaUtil = mediaUtil;
-        this.newsFetchTask = newsFetchTask;
+    public MediaServiceImpl(UserMediaService userMediaService) {
+        this.userMediaService = userMediaService;
     }
 
     @Override
-    public MediaDTO createMedia(String mediaName, String rssLink) {
-        Media oldMedia = mediaMapper.findByName(mediaName);
-        if (oldMedia != null) {
-            throw new MediaNameAlreadyExists("media name already exists");
+    public Wrapper<Media> getQueryWrapper(MediaQueryRequest mediaQueryRequest) {
+        if (mediaQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
+        Long id = mediaQueryRequest.getId();
+        String mediaName = mediaQueryRequest.getName();
+        String rssLink = mediaQueryRequest.getRssLink();
+        Long userId = mediaQueryRequest.getUserId();
+        String sortField = mediaQueryRequest.getSortField();
+        String sortOrder = mediaQueryRequest.getSortOrder();
 
-        if (!rssUtil.isValidRssUrl(rssLink)) {
-            throw new InvalidRSSFormatException("RSS 链接的格式有误");
+        List<Long> mediaIdList = new ArrayList<>();
+        if (userId != null) {
+            QueryWrapper<UserMedia> userMediaWrapper = new QueryWrapper<>();
+            userMediaWrapper.eq("user_id", userId);
+            mediaIdList = userMediaService.list(userMediaWrapper).stream().map(UserMedia::getMediaId).collect(Collectors.toList());
         }
-
-        MediaDTO mediaDTO = new MediaDTO();
-        mediaDTO.setName(mediaName);
-        mediaDTO.setRssLink(rssLink);
-        Integer result = mediaMapper.insert(mediaUtil.convertMediaDTOToMediaModel(mediaDTO));
-        if (result == 0) {
-            throw new MediaCreationException("创建媒体失败");
-        } else {
-            newsFetchTask.fetchNewsFromRss();
-            return mediaUtil.convertMediaModelToMediaDTO(mediaMapper.findByName(mediaDTO.getName()));
-        }
-    }
-
-    @Override
-    public MediaDTO deleteMediaByMediaName(String mediaName) {
-        Media media = mediaMapper.findByName(mediaName);
-
-        int result = mediaMapper.deleteByName(mediaName);
-        if (result == 0) {
-            throw new MediaDeleteException("删除媒体失败");
-        }
-
-        return mediaUtil.convertMediaModelToMediaDTO(media);
+        QueryWrapper<Media> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(id != null, "id", id);
+        queryWrapper.in(!mediaIdList.isEmpty(), "id", mediaIdList);
+        queryWrapper.eq(StringUtils.isNotBlank(mediaName), "name", mediaName);
+        queryWrapper.eq(StringUtils.isNotBlank(rssLink), "rss_link", rssLink);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
+                sortField);
+        return queryWrapper;
     }
 }

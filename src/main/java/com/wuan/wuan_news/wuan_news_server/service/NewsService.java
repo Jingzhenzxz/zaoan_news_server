@@ -1,6 +1,7 @@
 package com.wuan.wuan_news.wuan_news_server.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wuan.wuan_news.wuan_news_server.model.dto.news.NewsQueryRequest;
 import com.wuan.wuan_news.wuan_news_server.model.entity.News;
@@ -13,5 +14,5 @@ import com.wuan.wuan_news.wuan_news_server.model.entity.News;
  * @description
  */
 public interface NewsService extends IService<News> {
-    Wrapper<News> getQueryWrapper(NewsQueryRequest newsQueryRequest);
+    QueryWrapper<News> getQueryWrapper(NewsQueryRequest newsQueryRequest);
 }

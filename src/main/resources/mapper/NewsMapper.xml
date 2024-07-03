@@ -5,23 +5,23 @@
 <mapper namespace="com.wuan.wuan_news.wuan_news_server.mapper.NewsMapper">
 
     <resultMap id="BaseResultMap" type="com.wuan.wuan_news.wuan_news_server.model.entity.News">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="description" column="description" jdbcType="VARCHAR"/>
-        <result property="previewImage" column="preview_image" jdbcType="VARCHAR"/>
-        <result property="pubDate" column="pub_date" jdbcType="TIMESTAMP"/>
-        <result property="link" column="link" jdbcType="VARCHAR"/>
-        <result property="author" column="author" jdbcType="VARCHAR"/>
-        <result property="mediaName" column="media_name" jdbcType="VARCHAR"/>
-        <result property="mediaId" column="media_id" jdbcType="BIGINT"/>
-        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
-        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="previewImage" column="preview_image" jdbcType="VARCHAR"/>
+            <result property="pubDate" column="pub_date" jdbcType="TIMESTAMP"/>
+            <result property="link" column="link" jdbcType="VARCHAR"/>
+            <result property="author" column="author" jdbcType="VARCHAR"/>
+            <result property="mediaName" column="media_name" jdbcType="VARCHAR"/>
+            <result property="mediaId" column="media_id" jdbcType="BIGINT"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,title,description,
         preview_image,pub_date,link,
-        author,media_name,media_id,created_at,
-        updated_at
+        author,media_name,media_id,
+        created_at,updated_at
     </sql>
 </mapper>

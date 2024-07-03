@@ -7,13 +7,18 @@
     <resultMap id="BaseResultMap" type="com.wuan.wuan_news.wuan_news_server.model.entity.Topic">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="latestNews1Id" column="latest_news_1_id" jdbcType="BIGINT"/>
+            <result property="latestNews2Id" column="latest_news_2_id" jdbcType="BIGINT"/>
+            <result property="latestNews3Id" column="latest_news_3_id" jdbcType="BIGINT"/>
+            <result property="newContentTodayCount" column="new_content_today_count" jdbcType="INTEGER"/>
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
             <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,created_at,
-        updated_at,is_delete
+        id,name,user_id,
+        latest_news_1_id,latest_news_2_id,latest_news_3_id,
+        new_content_today_count,created_at,updated_at
     </sql>
 </mapper>

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -29,6 +30,18 @@ public class NewsTopic implements Serializable {
      * 话题编码
      */
     private Long topicId;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "created_at")
+    private LocalDateTime createdAt;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "updated_at")
+    private LocalDateTime updatedAt;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

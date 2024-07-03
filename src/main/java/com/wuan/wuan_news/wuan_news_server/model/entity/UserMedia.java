@@ -3,6 +3,8 @@ package com.wuan.wuan_news.wuan_news_server.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 /**
@@ -24,6 +26,18 @@ public class UserMedia implements Serializable {
      */
     @TableField(value = "media_id")
     private Long mediaId;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "created_at")
+    private LocalDateTime createdAt;
+
+    /**
+     * 修改时间
+     */
+    @TableField(value = "updated_at")
+    private LocalDateTime updatedAt;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

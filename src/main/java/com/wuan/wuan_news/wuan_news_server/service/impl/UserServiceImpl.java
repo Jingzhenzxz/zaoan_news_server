@@ -115,7 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + password).getBytes());
             // 3. 插入数据
             User user = new User();
-            user.setUserName(username);
+            user.setUsername(username);
             user.setEmail(email);
             user.setPassword(encryptPassword);
             boolean saveResult = this.save(user);
@@ -200,7 +200,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
         Long id = userQueryRequest.getId();
-        String userName = userQueryRequest.getUserName();
+        String username = userQueryRequest.getUsername();
         String userProfile = userQueryRequest.getUserProfile();
         String userRole = userQueryRequest.getUserRole();
         String sortField = userQueryRequest.getSortField();
@@ -209,7 +209,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq(id != null, "id", id);
         queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
         queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
-        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
+        queryWrapper.like(StringUtils.isNotBlank(username), "username", username);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;

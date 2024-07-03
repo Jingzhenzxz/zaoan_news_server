@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicQueryRequest;
 import com.wuan.wuan_news.wuan_news_server.model.entity.Topic;
+import com.wuan.wuan_news.wuan_news_server.model.vo.TopicVO;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,4 +15,5 @@ import com.wuan.wuan_news.wuan_news_server.model.entity.Topic;
  */
 public interface TopicService extends IService<Topic> {
     Wrapper<Topic> getQueryWrapper(TopicQueryRequest topicQueryRequest);
+    TopicVO topicToTopicVO(Topic topic);
 }

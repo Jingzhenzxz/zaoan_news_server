@@ -51,5 +51,10 @@ public class NewsQueryRequest extends PageRequest implements Serializable {
      */
     private Long mediaId;
 
+    /**
+     * 话题编码
+     */
+    private Long topicId;
+
     private static final long serialVersionUID = 1L;
 }

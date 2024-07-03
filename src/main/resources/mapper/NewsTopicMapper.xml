@@ -7,9 +7,12 @@
     <resultMap id="BaseResultMap" type="com.wuan.wuan_news.wuan_news_server.model.entity.NewsTopic">
             <id property="newsId" column="news_id" jdbcType="BIGINT"/>
             <id property="topicId" column="topic_id" jdbcType="BIGINT"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        news_id,topic_id
+        news_id,topic_id,created_at,
+        updated_at
     </sql>
 </mapper>

@@ -10,7 +10,6 @@ import java.io.Serializable;
  * Created with IntelliJ IDEA.
  *
  * @author Jingzhen
- * @date 2023/09/02/ 10:04
  * @description
  */
 @EqualsAndHashCode(callSuper = true)

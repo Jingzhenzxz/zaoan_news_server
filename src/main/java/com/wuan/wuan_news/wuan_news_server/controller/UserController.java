@@ -265,6 +265,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/update/my")
+    @AuthCheck(mustRole = UserConstant.DEFAULT_ROLE)
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
                                               HttpServletRequest request) {
         if (userUpdateMyRequest == null) {

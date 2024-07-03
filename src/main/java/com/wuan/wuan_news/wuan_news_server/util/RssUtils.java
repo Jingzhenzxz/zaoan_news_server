@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class RssUtil {
+public class RssUtils {
     public boolean isValidRssUrl(String rssUrl) {
         try {
             URL feedUrl = new URL(rssUrl);

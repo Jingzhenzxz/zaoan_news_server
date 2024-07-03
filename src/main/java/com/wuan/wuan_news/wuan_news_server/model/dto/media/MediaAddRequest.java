@@ -18,7 +18,5 @@ public class MediaAddRequest implements Serializable {
     private String name;
     @NotEmpty(message = "RSS 地址不能为空")
     private String rssLink;
-    @NotEmpty(message = "用户编码不能为空")
-    private Long userId;
     private static final long serialVersionUID = 1L;
 }

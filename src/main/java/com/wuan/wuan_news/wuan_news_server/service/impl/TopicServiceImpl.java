@@ -8,10 +8,13 @@ import com.wuan.wuan_news.wuan_news_server.constant.CommonConstant;
 import com.wuan.wuan_news.wuan_news_server.exception.BusinessException;
 import com.wuan.wuan_news.wuan_news_server.model.dto.topic.TopicQueryRequest;
 import com.wuan.wuan_news.wuan_news_server.mapper.TopicMapper;
+import com.wuan.wuan_news.wuan_news_server.model.entity.News;
 import com.wuan.wuan_news.wuan_news_server.model.entity.Topic;
-import com.wuan.wuan_news.wuan_news_server.model.entity.UserTopic;
+import com.wuan.wuan_news.wuan_news_server.model.entity.UserTopicFollowing;
+import com.wuan.wuan_news.wuan_news_server.model.vo.TopicVO;
+import com.wuan.wuan_news.wuan_news_server.service.NewsService;
 import com.wuan.wuan_news.wuan_news_server.service.TopicService;
-import com.wuan.wuan_news.wuan_news_server.service.UserTopicService;
+import com.wuan.wuan_news.wuan_news_server.service.UserTopicFollowingService;
 import com.wuan.wuan_news.wuan_news_server.util.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -29,10 +32,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService {
-    private final UserTopicService userTopicService;
+    private final UserTopicFollowingService userTopicFollowingService;
+    private final NewsService newsService;
 
-    public TopicServiceImpl(UserTopicService userTopicService) {
-        this.userTopicService = userTopicService;
+    public TopicServiceImpl(UserTopicFollowingService userTopicFollowingService, NewsService newsService) {
+        this.userTopicFollowingService = userTopicFollowingService;
+        this.newsService = newsService;
     }
 
     @Override
@@ -46,9 +51,9 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         String sortOrder = topicQueryRequest.getSortOrder();
         List<Long> topicIds = new ArrayList<>();
         if (topicQueryRequest.getUserId() != null) {
-            QueryWrapper<UserTopic> userTopicQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<UserTopicFollowing> userTopicQueryWrapper = new QueryWrapper<>();
             userTopicQueryWrapper.eq("user_id", topicQueryRequest.getUserId());
-             topicIds = userTopicService.list(userTopicQueryWrapper).stream().map(UserTopic::getTopicId).collect(Collectors.toList());
+             topicIds = userTopicFollowingService.list(userTopicQueryWrapper).stream().map(UserTopicFollowing::getTopicId).collect(Collectors.toList());
         }
         QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(id != null, "id", id);
@@ -57,5 +62,24 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public TopicVO topicToTopicVO(Topic topic) {
+        if (topic == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        TopicVO topicVO = new TopicVO();
+        topicVO.setId(topic.getId());
+        topicVO.setTopicName(topic.getName());
+
+        List<News> listOfNews = new ArrayList<>();
+        listOfNews.add(newsService.getById(topic.getLatestNews1Id()));
+        listOfNews.add(newsService.getById(topic.getLatestNews2Id()));
+        listOfNews.add(newsService.getById(topic.getLatestNews3Id()));
+        topicVO.setListOfNews(listOfNews);
+
+        topicVO.setNewContentTodayCount(topicVO.getNewContentTodayCount());
+        return topicVO;
     }
 }

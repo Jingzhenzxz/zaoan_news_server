@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.wuan.wuan_news.wuan_news_server.model.entity.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="userRole" column="user_role" jdbcType="VARCHAR"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_name,email,
+        id,username,email,
         password,user_role,user_avatar,
         user_profile,created_at,updated_at,
         is_delete

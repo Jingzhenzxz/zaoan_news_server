@@ -43,13 +43,6 @@ public class Media implements Serializable {
     @TableField(value = "updated_at")
     private LocalDateTime updatedAt;
 
-    /**
-     * 是否被删除
-     */
-    @TableField(value = "is_delete")
-    @TableLogic
-    private Integer isDelete;
-
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

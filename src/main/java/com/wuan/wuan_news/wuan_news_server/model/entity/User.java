@@ -23,8 +23,8 @@ public class User implements Serializable {
     /**
      * 
      */
-    @TableField(value = "user_name")
-    private String userName;
+    @TableField(value = "username")
+    private String username;
 
     /**
      * 
@@ -57,13 +57,13 @@ public class User implements Serializable {
     private String userProfile;
 
     /**
-     *
+     * 创建时间
      */
     @TableField(value = "created_at")
     private LocalDateTime createdAt;
 
     /**
-     *
+     * 修改时间
      */
     @TableField(value = "updated_at")
     private LocalDateTime updatedAt;

@@ -7,7 +7,6 @@ import com.wuan.wuan_news.wuan_news_server.common.ErrorCode;
 import com.wuan.wuan_news.wuan_news_server.constant.CommonConstant;
 import com.wuan.wuan_news.wuan_news_server.exception.BusinessException;
 import com.wuan.wuan_news.wuan_news_server.mapper.MediaMapper;
-import com.wuan.wuan_news.wuan_news_server.mapper.UserMediaMapper;
 import com.wuan.wuan_news.wuan_news_server.model.dto.media.MediaQueryRequest;
 import com.wuan.wuan_news.wuan_news_server.model.entity.Media;
 import com.wuan.wuan_news.wuan_news_server.model.entity.UserMedia;

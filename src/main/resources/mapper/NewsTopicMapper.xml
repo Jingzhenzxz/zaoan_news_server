@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wuan.wuan_news.wuan_news_server.mapper.NewsTopicMapper">
+<mapper namespace="com.zaoan.zaoan_news.zaoan_news_server.mapper.NewsTopicMapper">
 
-    <resultMap id="BaseResultMap" type="com.wuan.wuan_news.wuan_news_server.model.entity.NewsTopic">
+    <resultMap id="BaseResultMap" type="com.zaoan.zaoan_news.zaoan_news_server.model.entity.NewsTopic">
             <id property="newsId" column="news_id" jdbcType="BIGINT"/>
             <id property="topicId" column="topic_id" jdbcType="BIGINT"/>
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>

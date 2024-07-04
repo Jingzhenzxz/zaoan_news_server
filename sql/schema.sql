@@ -1,6 +1,6 @@
-create database if not exists wuan_news;
+create database if not exists zaoan_news;
 
-USE wuan_news;
+USE zaoan_news;
 
 CREATE TABLE IF NOT EXISTS `media` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '媒体编码',

@@ -113,7 +113,7 @@ public class NewsFetchTask {
                     Long topicId = topic.getId();
                     QueryWrapper<NewsTopic> newsTopicQueryWrapper = new QueryWrapper<>();
                     newsTopicQueryWrapper.eq("news_id", savedNews.getId());
-                    newsQueryWrapper.eq("topic_id", topicId);
+                    newsTopicQueryWrapper.eq("topic_id", topicId);
                     NewsTopic oldNewsTopic = newsTopicService.getOne(newsTopicQueryWrapper);
 
                     if (oldNewsTopic != null) {

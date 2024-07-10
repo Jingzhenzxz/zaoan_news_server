@@ -59,7 +59,7 @@ public class NewsController {
         Page<NewsVO> newsVOPage = new Page<>(current, size, newsPage.getTotal());
         List<News> newsList = newsPage.getRecords();
         List<NewsVO> newsVOList = newsList.stream()
-                .sorted(Comparator.comparing(News::getUpdatedAt))
+                .sorted(Comparator.comparing(News::getUpdatedAt).reversed()) // 这里不加reversed的话顺序不对
                 .map(news -> {
                     NewsVO newsVO = new NewsVO();
                     BeanUtils.copyProperties(news, newsVO);

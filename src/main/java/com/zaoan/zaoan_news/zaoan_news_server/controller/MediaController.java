@@ -79,7 +79,11 @@ public class MediaController {
         ThrowUtils.throwIf(!userMediaSaved, ErrorCode.OPERATION_ERROR);
 
         // 创建完媒体后立刻获取新闻
-        newsFetchTask.fetchNewsFromRss(mediaService.getById(mediaId));
+        try {
+            newsFetchTask.fetchNewsFromRss(mediaService.getById(mediaId));
+        } catch (Exception e) {
+            // todo 如果fetchFromRssUrl方法抛出连接超时异常，就删除媒体
+        }
         return ResultUtils.success(true);
     }
 
@@ -180,6 +184,22 @@ public class MediaController {
         return ResultUtils.success(media);
     }
 
+
+    @PostMapping("/getByLink")
+    public BaseResponse<Media> getMediaByLink(@RequestBody MediaQueryRequest mediaQueryRequest, HttpServletRequest request) {
+        if (mediaQueryRequest.getRssLink() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String rssLink = mediaQueryRequest.getRssLink();
+
+        QueryWrapper<Media> mediaQueryWrapper = new QueryWrapper<>();
+        mediaQueryWrapper.eq("rss_link", rssLink);
+        Media media = mediaService.getOne(mediaQueryWrapper);
+        ThrowUtils.throwIf(media == null, ErrorCode.OPERATION_ERROR);
+
+        return ResultUtils.success(media);
+    }
+
     @GetMapping("/getById/vo")
     public BaseResponse<MediaVO> getMediaVOById(@RequestParam Long id, HttpServletRequest request) {
         if (id == null || id <= 0) {
@@ -202,6 +222,23 @@ public class MediaController {
 
         QueryWrapper<Media> mediaQueryWrapper = new QueryWrapper<>();
         mediaQueryWrapper.eq("name", mediaName);
+        mediaQueryWrapper.eq("rss_link", rssLink);
+        Media media = mediaService.getOne(mediaQueryWrapper);
+        ThrowUtils.throwIf(media == null, ErrorCode.OPERATION_ERROR);
+
+        MediaVO mediaVO = new MediaVO();
+        BeanUtils.copyProperties(media, mediaVO);
+        return ResultUtils.success(mediaVO);
+    }
+
+    @PostMapping("/getByLink/vo")
+    public BaseResponse<MediaVO> getMediaVOByLink(@RequestBody MediaQueryRequest mediaQueryRequest, HttpServletRequest request) {
+        if (mediaQueryRequest.getRssLink() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String rssLink = mediaQueryRequest.getRssLink();
+
+        QueryWrapper<Media> mediaQueryWrapper = new QueryWrapper<>();
         mediaQueryWrapper.eq("rss_link", rssLink);
         Media media = mediaService.getOne(mediaQueryWrapper);
         ThrowUtils.throwIf(media == null, ErrorCode.OPERATION_ERROR);
